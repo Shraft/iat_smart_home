@@ -1,6 +1,6 @@
 # smart home system for iat
 
-## files and directories
+### files and directories
 
 /docker contains all docker files
 
@@ -15,5 +15,5 @@
 
 
 
-
+### other informations
 proof of concept only!
