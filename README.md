@@ -8,12 +8,5 @@
 
 /src/com-server app for both websocket to frondend and mqtt connection
 
-
-
-
-
-
-
-
 ### other informations
 proof of concept only!
