@@ -1,0 +1,32 @@
+.menu {
+    width: 10%;
+    height: 90%;
+    position: fixed;
+    left: 0px;
+    top: 5%;
+    background-color: darkgray;
+    color: black;
+    border-radius: 0px 10px 10px 0px;
+}
+
+.sensorcontainer {
+    
+    left: 10%;
+}
+
+.sensorelement{
+    width: 27%;
+    margin: 5px;
+    height: auto;
+    position: relative;
+    float: right;
+    top: 5%;
+    background-color: darkgray;
+    color: black;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+body {
+    color: darkcyan;
+}
