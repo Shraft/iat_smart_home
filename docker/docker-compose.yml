@@ -23,32 +23,31 @@ services:
          - ./mosquitto/data:/mosquitto/data
 
 
-   flask:
-      build:
-          context: ..
-          dockerfile: ./docker/flask_service
-      image: main_service
-      restart: always
-      container_name: flask_container
-      volumes:
-# quelle für dateien anpassen:
-         - ~/res:/python-docker/src/main/static/res 
-      ports:
-         - 5000:5000
-      network_mode: "host"
+#    flask:
+#       build:
+#           context: ..
+#           dockerfile: ./docker/flask_service
+#       image: main_service
+#       restart: always
+#       container_name: flask_container
+#       volumes:
+# # quelle für dateien anpassen:
+#          - ~/res:/python-docker/src/main/static/res 
+#       ports:
+#          - 5000:5000
+#       network_mode: "host"
 
-   base:
-      build:
-          context: ..
-          dockerfile: ./docker/com_service
-      image: main_service
-      restart: always
-      container_name: communication_container
-# ports anpassen:
-      ports:
-         - 5000:5000
-      network_mode: "host"
-
+#    base:
+#       build:
+#           context: ..
+#           dockerfile: ./docker/com_service
+#       image: main_service
+#       restart: always
+#       container_name: communication_container
+# # ports anpassen:
+#       ports:
+#          - 5000:5000
+#       network_mode: "host"
 
 volumes:
    universedb:
