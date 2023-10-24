@@ -1,4 +1,5 @@
 import time
+import threading
 import paho.mqtt.client as mqtt
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO
@@ -49,6 +50,8 @@ def start_mqtt():
 
     client.publish("house/main", "Die Zentrale ist jetzt online")  
 
+    while True:
+        pass
 
     #client.loop_stop()                     
     #sclient.disconnect()                   
@@ -70,5 +73,11 @@ def on_connect(auth):
 api.add_resource(Basic, '/')
     
 if __name__ == '__main__':
-    start_mqtt()
+
+    game_loop_thread = threading.Thread(target=start_mqtt)
+    game_loop_thread.daemon = True
+    game_loop_thread.start()
+    print("Thread gestartet")
+
+    #start_mqtt()
     websocket.run(app, host='0.0.0.0', port=8080, debug=False) 
