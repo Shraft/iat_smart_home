@@ -32,6 +32,7 @@ while True:
 
     for sensor_id in range(1, sensor_count+1):
         sensor_data = {"uuid": uuid_list[sensor_id-1],
+                       "type": "temperatur",
                        "operation" : "update",
                        "value": basic_temp + sensor_id}
         client.publish("house/main", json.dumps(sensor_data))

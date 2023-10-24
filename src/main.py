@@ -12,7 +12,7 @@ websocket = SocketIO(app)
 api=Api(app)
 app.secret_key = 'your_secret_key'
 
-global_sensors = {}
+global_temp_sensors = {}
 
 
 def mqtt_on_message_callback(client, userdata, message):
@@ -28,13 +28,11 @@ def mqtt_on_message_callback(client, userdata, message):
 
     if sensor_data["operation"] == "update":
         print("update")
-        if sensor_data["uuid"] not in global_sensors:
-            print("add sensor")
-            global_sensors[sensor_data["uuid"]] = sensor_data["value"]
+        global_temp_sensors[sensor_data["uuid"]] = sensor_data["value"]
         
 
     
-    print(global_sensors)
+    print(global_temp_sensors)
 
 
 
@@ -66,7 +64,7 @@ def on_connect(auth):
 @websocket.on('get_sensor_data')
 def on_connect(auth):
     print("Sensor Data requested")
-    websocket.emit("connect", json.dumps(global_sensors))
+    websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
 
 
 api.add_resource(Basic, '/')
