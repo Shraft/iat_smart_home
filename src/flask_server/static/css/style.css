@@ -7,15 +7,19 @@
     background-color: darkgray;
     color: black;
     border-radius: 0px 10px 10px 0px;
+    text-align: center;
 }
 
 .sensorcontainer {
-    
+    width: 90%;
     left: 10%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    position: absolute;
 }
 
 .sensorelement{
-    width: 27%;
+    width: 95%;
     margin: 5px;
     height: auto;
     position: relative;
@@ -24,9 +28,9 @@
     background-color: darkgray;
     color: black;
     border-radius: 5px;
-    padding: 20px;
+    padding: 10px;
 }
 
 body {
-    color: darkcyan;
+    background-color: darkcyan;
 }

@@ -3,10 +3,10 @@ version: "3"
 services:
    database:
       image: postgres:latest
-      container_name: UniverseDB_container
+      container_name: db_container
       environment:
-         - POSTGRES_PASSWORD=universe
-         - POSTGRES_USER=universe
+         - POSTGRES_PASSWORD=automatisierungstechnik
+         - POSTGRES_USER=praktikum
       volumes:
          - universedb:/var/lib/postgresql/data
       ports:
