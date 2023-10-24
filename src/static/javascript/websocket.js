@@ -4,6 +4,9 @@ websocket.on('connect', function(data) {
     console.log(data)
 });
 
+websocket.on('sensor_data', function(data) {
+    console.log(data)
+});
 
 
 websocket.on('enemy_ships', function(data) {
