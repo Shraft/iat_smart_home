@@ -2,7 +2,7 @@ import time
 import paho.mqtt.client as mqtt
 
 
-broker = "192.168.158.11"
+broker = "localhost"
 
 client = mqtt.Client("sender")
 

@@ -14,14 +14,14 @@ services:
 
    mosquitto:
       image: eclipse-mosquitto:2
-         ports:
-            - 1883:1883
-            - 8883:8883
-            - 9001:9001
-         volumes:
-            - ./mosquitto/config:/mosquitto/config
-            - ./mosquitto/data:/mosquitto/data
-         networks:
+      ports:
+         - 1883:1883
+         - 8883:8883
+         - 9001:9001
+      volumes:
+         - ./mosquitto/config:/mosquitto/config
+         - ./mosquitto/data:/mosquitto/data
+
 
    flask:
       build:
@@ -29,7 +29,7 @@ services:
           dockerfile: ./docker/flask_service
       image: main_service
       restart: always
-      container_name: main_server
+      container_name: flask_container
       volumes:
 # quelle für dateien anpassen:
          - ~/res:/python-docker/src/main/static/res 
@@ -43,7 +43,7 @@ services:
           dockerfile: ./docker/com_service
       image: main_service
       restart: always
-      container_name: main_server
+      container_name: communication_container
 # ports anpassen:
       ports:
          - 5000:5000
