@@ -5,12 +5,12 @@ services:
       image: postgres:latest
       container_name: db_container
       environment:
-         - POSTGRES_PASSWORD=automatisierungstechnik
+         - POSTGRES_PASSWORD=praktikum
          - POSTGRES_USER=praktikum
       volumes:
-         - universedb:/var/lib/postgresql/data
+         - smarthomedb:/var/lib/postgresql/data
       ports:
-         - 5432:5432
+         - 9876:5432
 
    mosquitto:
       image: eclipse-mosquitto:2
@@ -50,6 +50,6 @@ services:
 #       network_mode: "host"
 
 volumes:
-   universedb:
+   smarthomedb:
       driver: local
 

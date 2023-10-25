@@ -27,8 +27,8 @@ print("Sender aktiviert")
 basic_temp = 10
 
 while True:
-    temp_trend = random.randint(0, 1)
-    basic_temp = basic_temp + 0.5 if temp_trend else basic_temp - 0.5
+    temp_trend = random.randint(0, 2)
+    basic_temp = basic_temp - 0.5 if temp_trend == 0 else basic_temp + 0.5
 
     for sensor_id in range(1, sensor_count+1):
         sensor_data = {"uuid": uuid_list[sensor_id-1],
