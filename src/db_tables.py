@@ -27,7 +27,6 @@ Session = sessionmaker()
 class Sensor_logs(base):
     __tablename__ = "sensor_logs"
     id = Column(Integer, primary_key=True)
-    sensor_type = Column(String(100))
     sid = Column(Integer)
     time = Column(String(100))
     value = Column(String(100))

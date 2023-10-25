@@ -21,12 +21,15 @@ websocket.on('temp_sensor_data', function(data) {
     var sensors = document.createElement("div")
 
     for (let sensor_object in sensor_list) {
+        var sensor_div = document.createElement("div")
+        sensor_div.id = sensor_list[sensor_object]["uuid"]
         var trennung = document.createElement("hr")
         var temp_caption = document.createElement("p")
         temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "° Celsius"
         console.log(sensor_list[sensor_object]["name"])
-        sensors.appendChild(trennung)
-        sensors.appendChild(temp_caption)
+        sensors.appendChild(sensor_div)
+        sensor_div.appendChild(trennung)
+        sensor_div.appendChild(temp_caption)
     }
 
     sensor_element.appendChild(caption)
@@ -35,29 +38,73 @@ websocket.on('temp_sensor_data', function(data) {
 });
 
 
-websocket.on('enemy_ships', function(data) {
+websocket.on('temp_sensor_history', function(data) {
+    sensor_list = JSON.parse(data)
     
+    for (let sensor_object in sensor_list) {
+        console.log(sensor_list)
+        console.log(sensor_object)
 
+        parent = document.getElementById(sensor_object)
+        let canvas = document.createElement("canvas")
+        canvas.classList.add("temp_graph")
 
-    // Iterate thought all Ships
-    for (let index = 0; index < enemy_shiplist.length; index++) {
-        enemy_ships.push(enemy_shiplist[index])   
-        enemy_ships[index]["html_image_id"] = "mothership_container" + index
-        enemy_ships[index]["local_direction"] = "left"
-       
-        // Images
-        var parent = document.getElementById("insertenemyshipshere")                         // get Insertion-Space
-        var ship_element = document.createElement("div");  
-        ship_element.id = "enemy_mothership_container" + index;                   
-        ship_element.style.top = parseInt(1080 - enemy_shiplist[index].local_position[1]) + "px"
-        ship_element.style.left = enemy_shiplist[index].local_position[0] + "px"
-        ship_element.classList.add("enemy_ship_container_class")
+        let temperaturDaten = sensor_list[sensor_object];
+        if (temperaturDaten.length > 10) {
+            // Die ersten Elemente entfernen, bis die Liste eine Länge von 10 hat
+            temperaturDaten.splice(0, temperaturDaten.length - 10);
+        }
+
+        // Canvas-Element und 2D-Kontext abrufen
+        const context = canvas.getContext('2d');
+
+        // Funktion zum Zeichnen des Temperaturverlaufs
+        function zeichneTemperaturGraph() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
         
-        var ship_image = document.createElement("img");                                 // create Ship Image
-        ship_image.id = "enemy_mothership" + index;
-        ship_image.style.width = enemy_shiplist[index].size / 3 + "px"
-        ship_image.src = "../static/images/ships/" + enemy_shiplist[index].ship_class.toLowerCase() + "_right.png";
-        ship_element.appendChild(ship_image)
-        parent.appendChild(ship_element)
+            const breite = canvas.width;
+            const höhe = canvas.height;
+            const temperaturMax = 30; // Maximale Temperaturwert, den du anzeigen möchtest
+            const schrittY = 5; // Schrittgröße für die Y-Achse
+        
+            context.strokeStyle = 'blue';
+            context.lineWidth = 2;
+        
+            context.beginPath();
+            context.moveTo(0, höhe - (temperaturDaten[0] / temperaturMax) * höhe); // Verwende die volle Höhe
+        
+            const schritt = breite / (temperaturDaten.length - 1);
+        
+            for (let i = 0; i < temperaturDaten.length; i++) {
+                const x = i * schritt;
+                const y = höhe - (temperaturDaten[i] / temperaturMax) * höhe; // Skaliere die Temperatur auf die Canvas-Höhe
+                context.lineTo(x, y);
+        
+                // Zahlen an der Y-Achse (Temperatur)
+                context.font = '12px Arial';
+                context.fillText(temperaturDaten[i] + '°C', 10, y);
+        
+                // Zahlen an der X-Achse (Zeit)
+                context.fillText(i, x, höhe - 5);
+            }
+        
+            context.stroke();
+        
+            // Beschriftungen für Achsen hinzufügen
+            context.font = '14px Arial';
+            context.fillText('Temperatur (°C)', 10, 20);
+            context.fillText('Zeit', breite - 40, höhe - 5);
+        
+            // Y-Achse-Beschriftungen
+            for (let i = 0; i <= temperaturMax; i += schrittY) {
+                const y = höhe - (i / temperaturMax) * höhe;
+                context.fillText(i + '°C', 25, y);
+            }
+        }
+        
+
+        parent.appendChild(canvas)
+        zeichneTemperaturGraph();
     }
 });
+

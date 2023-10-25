@@ -55,7 +55,7 @@ def mqtt_on_message_callback(client, userdata, message):
         if db_sensor == None:
             new_sensor = Sensors(uuid=sensor_data['uuid'], 
                                  name="Sensor-" + str(sensor_data["uuid"]), 
-                                 sensor_type="Temperatursensor")
+                                 sensor_type="tmp")
             database.add(new_sensor)
             database.commit()
             print(f"Sensor mit UUID: {sensor_data['uuid']} wurde der DB zugeführt")
@@ -75,10 +75,12 @@ def mqtt_on_message_callback(client, userdata, message):
         last_sensor_logs = database.query(Sensor_logs).filter(Sensor_logs.sid == current_sensor.sid).all()
         for sensor_object in last_sensor_logs:
             if sensor_object.time == formatted_time:
-                return
+                pass
+                #return
             
-        new_sensor_commit = Sensor_logs(sid = current_sensor.sid, sensor_type = current_sensor.sensor_type,
-                                        time = formatted_time, value = sensor_data["value"])
+        new_sensor_commit = Sensor_logs(sid = current_sensor.sid,
+                                        time = formatted_time, 
+                                        value = sensor_data["value"])
         database.add(new_sensor_commit)
         database.commit()
 
@@ -112,8 +114,32 @@ def on_connect(auth):
     websocket.emit("connect", "Connection established")
 
 @websocket.on('get_sensor_data')
-def on_connect(auth):
+def on_get_sensor_data(auth):
     websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
+
+
+@websocket.on('get_sensor_history')
+def on_get_sensor_history(auth):
+    db_temp_sensors = database.query(Sensors).filter(Sensors.sensor_type == "tmp").all()
+    db_sensors_history = database.query(Sensor_logs).all()
+
+    temp_sensors_value_history = {}
+
+    if db_temp_sensors == None or db_sensors_history == None:
+        return
+
+    for temp_sensor in db_temp_sensors:
+        for any_sensor in db_sensors_history:
+            if temp_sensor.sid == any_sensor.sid:
+                if temp_sensor.uuid in temp_sensors_value_history:
+                    value_list = temp_sensors_value_history[temp_sensor.uuid]
+                    value_list.append(any_sensor.value)
+                else:
+                    value_list = []
+                    value_list.append(any_sensor.value)
+                    temp_sensors_value_history[temp_sensor.uuid] = value_list
+
+    websocket.emit("temp_sensor_history", json.dumps(temp_sensors_value_history))
 
 
 
