@@ -8,7 +8,7 @@ import os
 
 
 HOST_IP = "localhost" 
-db_string = f"postgresql://paktikum:automatisierungstechnik@{HOST_IP}:5432/smarthome"
+db_string = f"postgresql://praktikum:praktikum@{HOST_IP}:9876/smarthome"
 engine = create_engine(db_string)
 
 if not database_exists(engine.url):

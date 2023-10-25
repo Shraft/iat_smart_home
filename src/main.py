@@ -7,11 +7,26 @@ from flask_restful import Api
 from flask import Flask, render_template, redirect
 from routes import Basic
 import json
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from db_tables import Sensor_logs, Sensors
+import datetime
 
 app = Flask(__name__)
 websocket = SocketIO(app)
 api=Api(app)
 app.secret_key = 'your_secret_key'
+
+api.add_resource(Basic, '/')
+
+
+HOST_IP = "localhost"
+db_string = f"postgresql://praktikum:praktikum@{HOST_IP}:9876/smarthome"
+engine = create_engine(db_string)
+engine.connect()
+Session = sessionmaker()
+database = Session(bind=engine)
+
 
 global_temp_sensors = {}
 
@@ -29,7 +44,31 @@ def mqtt_on_message_callback(client, userdata, message):
 
     if sensor_data["operation"] == "update":
         print("update")
-        global_temp_sensors[sensor_data["uuid"]] = sensor_data["value"]
+        
+        db_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
+        if db_sensor == None:
+            new_sensor = Sensors(uuid=sensor_data['uuid'], name=None, sensor_type="Temperatursensor")
+            database.add(new_sensor)
+            database.commit()
+            print(f"Sensor mit UUID: {sensor_data['uuid']} wurde der DB zugeführt")
+
+        else:
+            sensor_name = db_sensor.name
+            sensor_dict = {"uuid": sensor_data["uuid"],
+                        "value": sensor_data["value"],
+                        "name": sensor_name}
+            global_temp_sensors[sensor_data["uuid"]] = sensor_dict
+
+
+            current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
+            now = datetime.datetime.now()
+            formatted_time = now.strftime("%d %H %M")
+            new_sensor_commit = Sensor_logs(sid = current_sensor.sid, sensor_type = current_sensor.sensor_type,
+                                            time = formatted_time)
+            database.add(new_sensor_commit)
+            database.commit()
+
+
         
 
     
@@ -70,7 +109,7 @@ def on_connect(auth):
     websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
 
 
-api.add_resource(Basic, '/')
+
     
 if __name__ == '__main__':
 

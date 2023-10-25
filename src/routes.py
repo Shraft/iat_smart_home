@@ -9,5 +9,6 @@ class Basic(Resource):
         return make_response(render_template('home.html'),200,headers)
 
 
+
     def post(self):
         pass

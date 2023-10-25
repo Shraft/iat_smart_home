@@ -23,8 +23,8 @@ websocket.on('temp_sensor_data', function(data) {
     for (let sensor_object in sensor_list) {
         var trennung = document.createElement("hr")
         var temp_caption = document.createElement("p")
-        temp_caption.innerHTML = sensor_list[sensor_object]
-        console.log(sensor_list[sensor_object])
+        temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "° Celsius"
+        console.log(sensor_list[sensor_object]["name"])
         sensors.appendChild(trennung)
         sensors.appendChild(temp_caption)
     }
