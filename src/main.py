@@ -146,4 +146,4 @@ if __name__ == '__main__':
     diagram_thread.start()
 
     print("Thread gestartet")
-    websocket.run(app, host='0.0.0.0', port=8080, debug=False) 
+    websocket.run(app, host='0.0.0.0', port=8080, debug=False, allow_unsafe_werkzeug=True) 
