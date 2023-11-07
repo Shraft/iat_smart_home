@@ -18,7 +18,7 @@ while True:
         break
 
 broker = "localhost"
-client = mqtt.Client("sender")
+client = mqtt.Client("temp_sender")
 client.connect(broker)
 client.subscribe("house/main")
 print("Sender aktiviert")

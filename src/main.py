@@ -129,8 +129,10 @@ def on_connect(auth):
 @websocket.on('get_sensor_data')
 def on_get_sensor_data(auth):
     print(f"WS: emit {global_temp_sensors}")
-    websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
-    websocket.emit("light_sensor_data", json.dumps(global_light_sensors))
+    if global_temp_sensors:
+        websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
+    if global_light_sensors:
+        websocket.emit("light_sensor_data", json.dumps(global_light_sensors))
 
 
 # Main initialazing

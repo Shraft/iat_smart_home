@@ -12,13 +12,17 @@ websocket.on('temp_sensor_data', function(data) {
     //let sensor_list = {"44444": 3.5, "55555": 4.5}
     console.log(sensor_list)
 
-    document.getElementById("sensorcontainer").innerHTML = "";
-
+    const temp_sensors_div = document.getElementById("temp_sensors");
+    if (temp_sensors_div != null) {
+        temp_sensors_div.innerHTML = "";
+        sensor_element = document.getElementById("temp_sensors")
+    } else {
+        var sensor_element = document.createElement("div")
+        sensor_element.id = "temp_sensors";  
+        sensor_element.classList.add("sensorelement");
+    }
     var parent = document.getElementById("sensorcontainer")
 
-    var sensor_element = document.createElement("div")
-    sensor_element.id = "temp_sensors";  
-    sensor_element.classList.add("sensorelement");
     var caption = document.createElement("h2")
     caption.innerHTML = "Temperatur-Sensoren"
     var sensors = document.createElement("div")
@@ -42,9 +46,7 @@ websocket.on('temp_sensor_data', function(data) {
         console.log(chart_string)
         chart.src = chart_string
         sensor_div.appendChild(chart)
-
-        
-        
+       
     }
 
     sensor_element.appendChild(caption)
@@ -59,13 +61,17 @@ websocket.on('light_sensor_data', function(data) {
     console.log("new light sensor data")
     console.log(sensor_list)
 
-    document.getElementById("sensorcontainer").innerHTML = "";
-
+    const light_sensors_div = document.getElementById("light_sensors");
+    if (light_sensors_div != null) {
+        light_sensors_div.innerHTML = "";
+        sensor_element = document.getElementById("light_sensors")
+    } else {
+        var sensor_element = document.createElement("div")
+        sensor_element.id = "light_sensors";  
+        sensor_element.classList.add("sensorelement");
+    }
     var parent = document.getElementById("sensorcontainer")
 
-    var sensor_element = document.createElement("div")
-    sensor_element.id = "light_sensors";  
-    sensor_element.classList.add("sensorelement");
     var caption = document.createElement("h2")
     caption.innerHTML = "Helligkeits-Sensoren"
     var sensors = document.createElement("div")

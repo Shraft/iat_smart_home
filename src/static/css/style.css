@@ -10,15 +10,35 @@
     text-align: center;
 }
 
-.sensorcontainer {
+.sensorcontainer2 {
     width: 90%;
     left: 10%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
     position: absolute;
 }
 
 .sensorelement{
+    width: 30%;
+    margin: 5px;
+    height: auto;
+    position: relative;
+    float: right;
+    top: 5%;
+    background-color: darkgray;
+    color: black;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1vw;
+}
+
+.sensorcontainer2 {
+    width: 90%;
+    left: 10%;
+    display: flex;
+    grid-template-columns: repeat(3, 1fr);
+    position: absolute;
+}
+
+.sensorelement2{
     width: 95%;
     margin: 5px;
     height: auto;
