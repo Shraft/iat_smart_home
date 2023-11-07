@@ -11,6 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db_tables import Sensor_logs, Sensors
 import datetime
+from diagram import create_diagram
 
 # init Flask
 app = Flask(__name__)
@@ -139,7 +140,12 @@ def on_get_sensor_history(auth):
                     value_list.append(any_sensor.value)
                     temp_sensors_value_history[temp_sensor.uuid] = value_list
 
-    websocket.emit("temp_sensor_history", json.dumps(temp_sensors_value_history))
+    #websocket.emit("temp_sensor_history", json.dumps(temp_sensors_value_history))
+    for sensor in temp_sensors_value_history:
+        k = 10
+        while len(temp_sensors_value_history[sensor]) > k:
+            temp_sensors_value_history[sensor].pop(0)
+        create_diagram(temp_sensors_value_history[sensor], sensor)
 
 
 

@@ -81,8 +81,8 @@ websocket.on('temp_sensor_history', function(data) {
                 context.lineTo(x, y);
         
                 // Zahlen an der Y-Achse (Temperatur)
-                context.font = '12px Arial';
-                context.fillText(temperaturDaten[i] + '°C', 10, y);
+                //context.font = '12px Arial';
+                //context.fillText(temperaturDaten[i] + '°C', 10, y);
         
                 // Zahlen an der X-Achse (Zeit)
                 context.fillText(i, x, höhe - 5);
@@ -92,13 +92,13 @@ websocket.on('temp_sensor_history', function(data) {
         
             // Beschriftungen für Achsen hinzufügen
             context.font = '14px Arial';
-            context.fillText('Temperatur (°C)', 10, 20);
+            context.fillText('Temperatur', breite - 40, 10);
             context.fillText('Zeit', breite - 40, höhe - 5);
         
             // Y-Achse-Beschriftungen
-            for (let i = 0; i <= temperaturMax; i += schrittY) {
+            for (let i = 10; i <= temperaturMax; i += schrittY) {
                 const y = höhe - (i / temperaturMax) * höhe;
-                context.fillText(i + '°C', 25, y);
+                context.fillText(i + '°C', breite - 40, y);
             }
         }
         
