@@ -37,6 +37,7 @@ class Sensors(base):
     uuid = Column(Integer)
     sensor_type = Column(String(100))
     name = Column(String(100))
+    renamed = Column(Boolean)
     
 
 base.metadata.create_all(conn)

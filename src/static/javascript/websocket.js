@@ -5,8 +5,8 @@ websocket.on('connect', function(data) {
     console.log(data)
 });
 
-websocket.on('temp_sensor_data', function(data) {
 
+websocket.on('temp_sensor_data', function(data) {
 
     sensor_list = JSON.parse(data)
     //let sensor_list = {"44444": 3.5, "55555": 4.5}
@@ -20,7 +20,7 @@ websocket.on('temp_sensor_data', function(data) {
     sensor_element.id = "temp_sensors";  
     sensor_element.classList.add("sensorelement");
     var caption = document.createElement("h2")
-    caption.innerHTML = "Temperatur Sensoren"
+    caption.innerHTML = "Temperatur-Sensoren"
     var sensors = document.createElement("div")
 
     for (let sensor_object in sensor_list) {
@@ -52,6 +52,41 @@ websocket.on('temp_sensor_data', function(data) {
     parent.appendChild(sensor_element)
 });
 
+
+websocket.on('light_sensor_data', function(data) {
+
+    sensor_list = JSON.parse(data)
+    console.log("new light sensor data")
+    console.log(sensor_list)
+
+    document.getElementById("sensorcontainer").innerHTML = "";
+
+    var parent = document.getElementById("sensorcontainer")
+
+    var sensor_element = document.createElement("div")
+    sensor_element.id = "light_sensors";  
+    sensor_element.classList.add("sensorelement");
+    var caption = document.createElement("h2")
+    caption.innerHTML = "Helligkeits-Sensoren"
+    var sensors = document.createElement("div")
+
+    for (let sensor_object in sensor_list) {
+        var sensor_div = document.createElement("div")
+        sensor_div.id = sensor_list[sensor_object]["uuid"]
+        var trennung = document.createElement("hr")
+        var temp_caption = document.createElement("p")
+        temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "% Licht"
+        console.log(sensor_list[sensor_object]["name"])
+        sensors.appendChild(sensor_div)
+        sensor_div.appendChild(trennung)
+        sensor_div.appendChild(temp_caption)
+               
+    }
+
+    sensor_element.appendChild(caption)
+    sensor_element.appendChild(sensors)
+    parent.appendChild(sensor_element)
+});
 
 
 

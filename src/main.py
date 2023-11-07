@@ -33,18 +33,20 @@ database = Session(bind=engine)
 
 # set global sensors
 global_temp_sensors = {}
+global_light_sensors = {}
+
+
 
 # -------------------
 # MQTT MSG income functions
 # -------------------
-
-
 def mqtt_on_message_callback(client, userdata, message):
 
     # Decode Message from MQTT
     decoded_message = message.payload.decode('utf-8')
     try:
         sensor_data = json.loads(decoded_message)
+        print(sensor_data)
     except json.JSONDecodeError as e:
         print("Fehler beim Decodieren der Nachricht:", e)
         return
@@ -57,7 +59,7 @@ def mqtt_on_message_callback(client, userdata, message):
         if db_sensor == None:
             new_sensor = Sensors(uuid=sensor_data['uuid'], 
                                  name="Sensor-" + str(sensor_data["uuid"]), 
-                                 sensor_type="tmp")
+                                 sensor_type=sensor_data["type"], renamed=False)
             database.add(new_sensor)
             database.commit()
             print(f"Sensor mit UUID: {sensor_data['uuid']} wurde der DB zugeführt")
@@ -65,10 +67,16 @@ def mqtt_on_message_callback(client, userdata, message):
         # Update local Sensor Dict
         # TODO: eventuell ganz darauf verzichten, alles nur mit DB? Basti fragen!
         db_sensor_existing = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
-        sensor_dict = {"uuid": sensor_data["uuid"],
+        local_sensor_dict = {"uuid": sensor_data["uuid"],
                     "value": sensor_data["value"],
-                    "name": db_sensor_existing.name}
-        global_temp_sensors[sensor_data["uuid"]] = sensor_dict
+                    "name": db_sensor_existing.name,
+                    "sensor_type": db_sensor_existing.sensor_type}
+        
+        # Add current value to correct dictionary
+        if local_sensor_dict["sensor_type"] == "temp":
+            global_temp_sensors[sensor_data["uuid"]] = local_sensor_dict
+        elif local_sensor_dict["sensor_type"] == "light":
+            global_light_sensors[sensor_data["uuid"]] = local_sensor_dict
 
         # Write Logs if Necessary
         current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
@@ -85,6 +93,9 @@ def mqtt_on_message_callback(client, userdata, message):
                                         value = sensor_data["value"])
         database.add(new_sensor_commit)
         database.commit()
+
+        print(f"Temperatur: \n {global_temp_sensors}")
+        print(f"Licht: \n {global_light_sensors}")
 
 
 
@@ -119,6 +130,7 @@ def on_connect(auth):
 def on_get_sensor_data(auth):
     print(f"WS: emit {global_temp_sensors}")
     websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
+    websocket.emit("light_sensor_data", json.dumps(global_light_sensors))
 
 
 # Main initialazing

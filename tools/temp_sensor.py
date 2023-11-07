@@ -32,7 +32,7 @@ while True:
     basic_temp = basic_temp - 0.5 if temp_trend == 0 else basic_temp + 0.5
 
     sensor_data = {"uuid": uuid_list[target_sensor-1],
-                    "type": "temperatur",
+                    "type": "temp",
                     "operation" : "update",
                     "value": basic_temp}
     client.publish("house/main", json.dumps(sensor_data))
