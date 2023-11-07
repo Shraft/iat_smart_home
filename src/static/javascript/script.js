@@ -5,4 +5,5 @@ function meineSchleife() {
 }
 
 // Die Schleife alle 3 Sekunden starten
-setInterval(meineSchleife, 15000);
+websocket.emit("get_sensor_data", "")
+setInterval(meineSchleife, 8000);

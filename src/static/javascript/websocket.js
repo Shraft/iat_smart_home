@@ -1,10 +1,13 @@
 const websocket = io.connect('http://localhost:8080');
 
+
 websocket.on('connect', function(data) {
     console.log(data)
 });
 
 websocket.on('temp_sensor_data', function(data) {
+
+
     sensor_list = JSON.parse(data)
     //let sensor_list = {"44444": 3.5, "55555": 4.5}
     console.log(sensor_list)
@@ -27,16 +30,21 @@ websocket.on('temp_sensor_data', function(data) {
         var temp_caption = document.createElement("p")
         temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "° Celsius"
         console.log(sensor_list[sensor_object]["name"])
+        sensors.appendChild(sensor_div)
+        sensor_div.appendChild(trennung)
+        sensor_div.appendChild(temp_caption)
+        
+
+        console.log("image")
         var chart = document.createElement("iframe")
         chart.classList.add("chart")
         var chart_string = "../static/charts/" + sensor_object + ".html"
         console.log(chart_string)
         chart.src = chart_string
-
-        sensors.appendChild(sensor_div)
-        sensor_div.appendChild(trennung)
-        sensor_div.appendChild(temp_caption)
         sensor_div.appendChild(chart)
+
+        
+        
     }
 
     sensor_element.appendChild(caption)
