@@ -11,7 +11,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db_tables import Sensor_logs, Sensors
 import datetime
-from diagram import create_diagram
+from diagram import create_diagrams
+
 
 # init Flask
 app = Flask(__name__)
@@ -116,38 +117,8 @@ def on_connect(auth):
 
 @websocket.on('get_sensor_data')
 def on_get_sensor_data(auth):
+    print(f"WS: emit {global_temp_sensors}")
     websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
-
-
-@websocket.on('get_sensor_history')
-def on_get_sensor_history(auth):
-    db_temp_sensors = database.query(Sensors).filter(Sensors.sensor_type == "tmp").all()
-    db_sensors_history = database.query(Sensor_logs).all()
-
-    temp_sensors_value_history = {}
-
-    if db_temp_sensors == None or db_sensors_history == None:
-        return
-
-    for temp_sensor in db_temp_sensors:
-        for any_sensor in db_sensors_history:
-            if temp_sensor.sid == any_sensor.sid:
-                if temp_sensor.uuid in temp_sensors_value_history:
-                    value_list = temp_sensors_value_history[temp_sensor.uuid]
-                    value_list.append(any_sensor.value)
-                else:
-                    value_list = []
-                    value_list.append(any_sensor.value)
-                    temp_sensors_value_history[temp_sensor.uuid] = value_list
-
-    #websocket.emit("temp_sensor_history", json.dumps(temp_sensors_value_history))
-    for sensor in temp_sensors_value_history:
-        k = 10
-        while len(temp_sensors_value_history[sensor]) > k:
-            temp_sensors_value_history[sensor].pop(0)
-        create_diagram(temp_sensors_value_history[sensor], sensor)
-
-
 
 
 # Main initialazing
@@ -155,5 +126,10 @@ if __name__ == '__main__':
     game_loop_thread = threading.Thread(target=start_mqtt)
     game_loop_thread.daemon = True
     game_loop_thread.start()
+
+    diagram_thread = threading.Thread(target=create_diagrams, args=(database,))
+    diagram_thread.daemon = True
+    diagram_thread.start()
+
     print("Thread gestartet")
     websocket.run(app, host='0.0.0.0', port=8080, debug=False) 

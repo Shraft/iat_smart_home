@@ -5,4 +5,4 @@ function meineSchleife() {
 }
 
 // Die Schleife alle 3 Sekunden starten
-setInterval(meineSchleife, 3000);
+setInterval(meineSchleife, 15000);

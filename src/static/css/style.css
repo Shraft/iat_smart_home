@@ -29,12 +29,17 @@
     color: black;
     border-radius: 5px;
     padding: 10px;
-    font-size: 1.5vw;
+    font-size: 1vw;
 }
 
 .temp_graph {
     width: 100%;
     height: 150px;
+}
+
+.chart {
+    width: 100%;
+    height: 230px;
 }
 
 body {
