@@ -1,12 +1,75 @@
 const websocket = io.connect('http://localhost:8080');
-
+var global_view = "overview"
 
 websocket.on('connect', function(data) {
     console.log(data)
 });
 
+function ws_send(content){
+    if (content == "get_overview") {
+        global_view = "overview"
+    } else if (content == "get_sensors") {
+        global_view = "sensors"
+    }
+    document.getElementById("sensorcontainer").innerHTML = "";
+    websocket.emit(content,"")
+}
+
+
+websocket.on('sensors', function(data) {
+    if (global_view != "sensors") {
+        return
+    }
+
+    sensor_list = JSON.parse(data)
+    console.log(sensor_list) 
+
+    const sensor_container = document.getElementById("sensorcontainer");
+    sensor_container.innerHTML = "";
+
+    var table = document.createElement("table")
+    table.classList.add("sensorelement_renaming")
+    var tr_head = document.createElement("tr")
+    var head_string = "<th>UUID</th><th>Type</th><th>Name</th><th>Actions</th>"
+
+    tr_head.innerHTML = head_string;
+    table.appendChild(tr_head)
+
+    for (let sensor_object in sensor_list) {
+
+        var tr_sensor = document.createElement("tr") 
+        var uuid = document.createElement("td")
+        uuid.innerHTML = sensor_list[sensor_object]["uuid"]
+        var name = document.createElement("td")
+        name.innerHTML = sensor_list[sensor_object]["name"]
+        var type = document.createElement("td")
+        type.innerHTML = sensor_list[sensor_object]["type"]
+
+        let img = document.createElement("td")
+        let rename_img = new Image();
+        rename_img.src = "../static/img/bleistift.png"
+        rename_img.classList.add("sensor_actions")
+        rename_img.onclick = function() {rename_sensor(sensor_list[sensor_object]["uuid"], sensor_list[sensor_object]["name"]);}
+        img.appendChild(rename_img)
+
+        tr_sensor.appendChild(uuid)
+        tr_sensor.appendChild(type)
+        tr_sensor.appendChild(name)
+        tr_sensor.appendChild(img)
+        table.appendChild(tr_sensor)
+
+    }
+
+
+    sensor_container.appendChild(table)
+
+})
+
 
 websocket.on('temp_sensor_data', function(data) {
+    if (global_view != "overview") {
+        return
+    }
 
     sensor_list = JSON.parse(data)
     console.log(sensor_list)
@@ -57,6 +120,9 @@ websocket.on('temp_sensor_data', function(data) {
 
 
 websocket.on('light_sensor_data', function(data) {
+    if (global_view != "overview") {
+        return
+    }
 
     sensor_list = JSON.parse(data)
     console.log("new light sensor data")

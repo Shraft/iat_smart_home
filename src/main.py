@@ -134,6 +134,32 @@ def on_get_sensor_data(auth):
     if global_light_sensors:
         websocket.emit("light_sensor_data", json.dumps(global_light_sensors))
 
+@websocket.on('get_overview')
+def get_overview(auth):
+    print("get overview requestet")
+
+@websocket.on('get_sensors')
+def get_sensors(auth):
+    print("get sensors requestet")
+    sensor_list = database.query(Sensors).all()
+
+    response_dict = {}
+    
+    for sensor in sensor_list:
+        response_dict[sensor.uuid] = {"type": sensor.sensor_type,
+                                      "uuid": sensor.uuid,
+                                      "name": sensor.name}
+
+    websocket.emit("sensors", json.dumps(response_dict))
+
+@websocket.on('rename_sensor')
+def rename_sensor(auth):
+    print("sensor umbenennen")
+    data = json.loads(auth)
+
+    db_sensor = database.query(Sensors).filter(Sensors.uuid == data["uuid"]).first()
+    db_sensor.name = data["new_name"]
+    database.commit
 
 # Main initialazing
 if __name__ == '__main__':

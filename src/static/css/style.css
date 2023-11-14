@@ -1,6 +1,6 @@
 .menu {
     width: 10%;
-    height: 90%;
+    height: auto;
     position: fixed;
     left: 0px;
     top: 5%;
@@ -8,6 +8,11 @@
     color: black;
     border-radius: 0px 10px 10px 0px;
     text-align: center;
+}
+
+.menu h3:hover{
+    color: darkcyan;
+    cursor: pointer;
 }
 
 .sensorcontainer {
@@ -18,7 +23,7 @@
 
 .sensorelement{
     width: 45%;
-    margin: 5px;
+    margin: 1%;
     height: auto;
     position: relative;
     float: right;
@@ -28,6 +33,30 @@
     border-radius: 5px;
     padding: 10px;
     font-size: 1.5vw;
+}
+
+.sensorelement summary {
+    font-size: 1.5vw;
+}
+
+.sensorelement_renaming {
+    width: 50%;
+    margin: 5px;
+    height: auto;
+    position: absolute;
+    top: 5%;
+    left: 20%;
+    background-color: darkgray;
+    color: black;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.5vw; 
+    text-align: center;
+}
+
+.sensor_actions {
+    width: 20px;
+    height: 20px;
 }
 
 

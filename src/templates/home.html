@@ -7,13 +7,17 @@
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script src="./../static/javascript/websocket.js"></script>
 <script src="./../static/javascript/script.js"></script>
+<script src="./../static/javascript/rename_sensor.js"></script>
 
 <title>Home</title>
 </head>
 <body>
 
 <div class="menu">
-    <h2>Übersicht</h2>
+    <h2>Navigation</h2>
+    <hr>
+    <h3 onclick="ws_send('get_overview')">Übersicht</h3>
+    <h3 onclick="ws_send('get_sensors')">Sensoren</h3>
 </div>
 
 <div class="sensorcontainer" id="sensorcontainer">
