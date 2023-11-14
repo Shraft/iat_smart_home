@@ -127,6 +127,7 @@ def on_connect(auth):
     websocket.emit("connect", "Connection established")
 
 @websocket.on('get_sensor_data')
+@websocket.on('get_overview')
 def on_get_sensor_data(auth):
     print(f"WS: emit {global_temp_sensors}")
     if global_temp_sensors:
@@ -134,9 +135,6 @@ def on_get_sensor_data(auth):
     if global_light_sensors:
         websocket.emit("light_sensor_data", json.dumps(global_light_sensors))
 
-@websocket.on('get_overview')
-def get_overview(auth):
-    print("get overview requestet")
 
 @websocket.on('get_sensors')
 def get_sensors(auth):

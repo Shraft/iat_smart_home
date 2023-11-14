@@ -24,7 +24,7 @@ def create_diagram(sensor_history, uuid):
     #fig.show()
 
     #fig = px.scatter(x=range(10), y=range(10))
-    path = f"static/charts/{uuid}.html"
+    path = f"src/static/charts/{uuid}.html"
     print(f"safe to path: {path}")
     fig.write_html(path)
 
