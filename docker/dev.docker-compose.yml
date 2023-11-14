@@ -1,0 +1,31 @@
+version: "2.1"
+
+services:
+   database:
+      image: postgres:latest
+      container_name: db_container
+      environment:
+         - POSTGRES_PASSWORD=praktikum
+         - POSTGRES_USER=praktikum
+      volumes:
+         - smarthomedb:/var/lib/postgresql/data
+      ports:
+         - 9876:5432
+      
+
+   mosquitto:
+      image: eclipse-mosquitto:2
+      ports:
+         - 1883:1883
+         - 8883:8883
+         - 9001:9001
+      volumes:
+         - ./mosquitto/config:/mosquitto/config
+#         - ./mosquitto/data:/mosquitto/data
+
+
+
+volumes:
+   smarthomedb:
+      driver: local
+
