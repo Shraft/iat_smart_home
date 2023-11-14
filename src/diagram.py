@@ -4,24 +4,26 @@ import pandas as pd
 #pio.renderers.default
 import time
 from db_tables import Sensor_logs, Sensors
+from datetime import datetime
 
 
 
 def create_diagram(sensor_history, uuid):
     k = len(sensor_history)
     x_list = []
+
     for n in range(0, k):
         x_list.append(n)
 
     df = pd.DataFrame(dict(
-        time = list(x_list),
-        temp = list(sensor_history)))   
+        Zeit = list(x_list),
+        Temperatur = list(sensor_history)))   
 
 
-    fig = px.line(df, x="time", y="temp", title="Sorted Input",) 
+    fig = px.line(df, x="Zeit", y="Temperatur",) 
     #fig.show()
 
-    fig = px.scatter(x=range(10), y=range(10))
+    #fig = px.scatter(x=range(10), y=range(10))
     path = f"static/charts/{uuid}.html"
     print(f"safe to path: {path}")
     fig.write_html(path)
@@ -29,9 +31,10 @@ def create_diagram(sensor_history, uuid):
 
 
 def create_diagrams(database):
+    
 
     while True:
-        db_temp_sensors = database.query(Sensors).filter(Sensors.sensor_type == "tmp").all()
+        db_temp_sensors = database.query(Sensors).filter(Sensors.sensor_type == "temp").all()
         db_sensors_history = database.query(Sensor_logs).all()
 
         temp_sensors_value_history = {}
@@ -52,11 +55,15 @@ def create_diagrams(database):
 
         #websocket.emit("temp_sensor_history", json.dumps(temp_sensors_value_history))
         for sensor in temp_sensors_value_history:
-            k = 10
+            k = 20
             while len(temp_sensors_value_history[sensor]) > k:
                 temp_sensors_value_history[sensor].pop(0)
-            print("create Diagram")
+            print(f"DIAGRAMS: create Diagram for {sensor}")
+            start_time = datetime.now()
             create_diagram(temp_sensors_value_history[sensor], sensor)
+            end_time = datetime.now()
+            time_diff = end_time - start_time
+            print(f"DIAGRAMS: Done in {time_diff} seconds")
 
 
         time.sleep(60)

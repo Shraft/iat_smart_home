@@ -10,14 +10,14 @@
     text-align: center;
 }
 
-.sensorcontainer2 {
+.sensorcontainer {
     width: 90%;
     left: 10%;
     position: absolute;
 }
 
 .sensorelement{
-    width: 30%;
+    width: 45%;
     margin: 5px;
     height: auto;
     position: relative;
@@ -27,34 +27,14 @@
     color: black;
     border-radius: 5px;
     padding: 10px;
-    font-size: 1vw;
+    font-size: 1.5vw;
 }
 
-.sensorcontainer2 {
-    width: 90%;
-    left: 10%;
-    display: flex;
-    grid-template-columns: repeat(3, 1fr);
-    position: absolute;
-}
 
-.sensorelement2{
-    width: 95%;
-    margin: 5px;
-    height: auto;
-    position: relative;
-    float: right;
-    top: 5%;
-    background-color: darkgray;
-    color: black;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1vw;
-}
 
 .temp_graph {
     width: 100%;
-    height: 150px;
+    height: 210px;
 }
 
 .chart {

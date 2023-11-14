@@ -46,7 +46,7 @@ def mqtt_on_message_callback(client, userdata, message):
     decoded_message = message.payload.decode('utf-8')
     try:
         sensor_data = json.loads(decoded_message)
-        print(sensor_data)
+        #print(sensor_data)
     except json.JSONDecodeError as e:
         print("Fehler beim Decodieren der Nachricht:", e)
         return
@@ -62,7 +62,7 @@ def mqtt_on_message_callback(client, userdata, message):
                                  sensor_type=sensor_data["type"], renamed=False)
             database.add(new_sensor)
             database.commit()
-            print(f"Sensor mit UUID: {sensor_data['uuid']} wurde der DB zugeführt")
+            #print(f"Sensor mit UUID: {sensor_data['uuid']} wurde der DB zugeführt")
 
         # Update local Sensor Dict
         # TODO: eventuell ganz darauf verzichten, alles nur mit DB? Basti fragen!
@@ -94,8 +94,8 @@ def mqtt_on_message_callback(client, userdata, message):
         database.add(new_sensor_commit)
         database.commit()
 
-        print(f"Temperatur: \n {global_temp_sensors}")
-        print(f"Licht: \n {global_light_sensors}")
+        #print(f"Temperatur: \n {global_temp_sensors}")
+        #print(f"Licht: \n {global_light_sensors}")
 
 
 
@@ -145,5 +145,5 @@ if __name__ == '__main__':
     diagram_thread.daemon = True
     diagram_thread.start()
 
-    print("Thread gestartet")
+    print("Threads gestartet")
     websocket.run(app, host='0.0.0.0', port=8080, debug=False, allow_unsafe_werkzeug=True) 

@@ -9,13 +9,14 @@ websocket.on('connect', function(data) {
 websocket.on('temp_sensor_data', function(data) {
 
     sensor_list = JSON.parse(data)
-    //let sensor_list = {"44444": 3.5, "55555": 4.5}
     console.log(sensor_list)
 
     const temp_sensors_div = document.getElementById("temp_sensors");
+    // IF TempSensor div existiert schon
     if (temp_sensors_div != null) {
         temp_sensors_div.innerHTML = "";
         sensor_element = document.getElementById("temp_sensors")
+    // IF TempSensor div existiert noch nicht    
     } else {
         var sensor_element = document.createElement("div")
         sensor_element.id = "temp_sensors";  
@@ -28,11 +29,11 @@ websocket.on('temp_sensor_data', function(data) {
     var sensors = document.createElement("div")
 
     for (let sensor_object in sensor_list) {
-        var sensor_div = document.createElement("div")
+        var sensor_div = document.createElement("details")
         sensor_div.id = sensor_list[sensor_object]["uuid"]
         var trennung = document.createElement("hr")
-        var temp_caption = document.createElement("p")
-        temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "° Celsius"
+        var temp_caption = document.createElement("summary")
+        temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "°C"
         console.log(sensor_list[sensor_object]["name"])
         sensors.appendChild(sensor_div)
         sensor_div.appendChild(trennung)
