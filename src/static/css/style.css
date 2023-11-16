@@ -54,15 +54,35 @@
     text-align: center;
 }
 
+
+.rfid_table {
+    margin: 5px;
+    padding: 0px 30px 0px 30px;
+    font-size: 1.5vw; 
+    text-align: center;
+}
+
+.rfid_table td {
+    padding: 10px 10px 10px 0px;
+}
+
 #renaming_temp {
     color: green;
 }
 
 #renaming_light {
-    color: orangered;
+    color: red;
 }
 
 #renaming_rfid {
+    color: purple;
+}
+
+#person_online {
+    color: green;
+}
+
+#person_offline {
     color: purple;
 }
 
@@ -71,6 +91,11 @@
     height: 20px;
 }
 
+.person_img {
+    width: 80px;
+    height: 80px;
+    border-radius: 25px;
+}
 
 
 .temp_graph {

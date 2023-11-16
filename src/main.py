@@ -65,11 +65,19 @@ def mqtt_on_message_callback(client, userdata, message):
     # TODO: eventuell ganz darauf verzichten, alles nur mit DB? Basti fragen!
     db_sensor_existing = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
     local_sensor_dict = {"uuid": sensor_data["uuid"],
-                "value": sensor_data["value"] if "value" in sensor_data != None else "empty",
                 "name": db_sensor_existing.name,
                 "sensor_type": db_sensor_existing.sensor_type}
-    
-    print(local_sensor_dict)
+    if (db_sensor_existing.sensor_type == "temp" or db_sensor_existing.sensor_type =="light"):
+        local_sensor_dict["value"] = sensor_data["value"]
+    elif (db_sensor_existing.sensor_type == "rfid"):
+        if sensor_data["uuid"] in global_rfid_persons:
+            if global_rfid_persons[sensor_data["uuid"]]["value"] == "offline":
+                local_sensor_dict["value"] = "online"
+            else:
+                local_sensor_dict["value"] = "offline"
+        else:
+            local_sensor_dict["value"] = "online"
+
     
     # Add current value to correct dictionary
     if local_sensor_dict["sensor_type"] == "temp":
@@ -78,6 +86,7 @@ def mqtt_on_message_callback(client, userdata, message):
         global_light_sensors[sensor_data["uuid"]] = local_sensor_dict
     elif local_sensor_dict["sensor_type"] == "rfid":
         global_rfid_persons[sensor_data["uuid"]] = local_sensor_dict
+
 
     # Write Logs if Necessary
     current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
@@ -133,6 +142,8 @@ def on_get_sensor_data(auth):
         websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
     if global_light_sensors:
         websocket.emit("light_sensor_data", json.dumps(global_light_sensors))
+    if global_rfid_persons:
+        websocket.emit("rfid_data", json.dumps(global_rfid_persons))
 
 
 @websocket.on('get_sensors')

@@ -16,6 +16,10 @@ function ws_send(content){
 }
 
 
+
+/* #################################
+    List All Sensors to rename them
+#################################### */
 websocket.on('sensors', function(data) {
     if (global_view != "sensors") {
         return
@@ -62,12 +66,13 @@ websocket.on('sensors', function(data) {
 
     }
 
-
     sensor_container.appendChild(table)
-
 })
 
 
+/* #################################
+    Show Temperatur Sensors
+#################################### */
 websocket.on('temp_sensor_data', function(data) {
     if (global_view != "overview") {
         return
@@ -122,6 +127,9 @@ websocket.on('temp_sensor_data', function(data) {
 });
 
 
+/* #################################
+    Show Light Sensors
+#################################### */
 websocket.on('light_sensor_data', function(data) {
     if (global_view != "overview") {
         return
@@ -166,134 +174,66 @@ websocket.on('light_sensor_data', function(data) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-websocket.on('temp_sensor_history', function(data) {
-    sensor_list = JSON.parse(data)
-    
-    for (let sensor_object in sensor_list) {
-        console.log(sensor_list)
-        console.log(sensor_object)
-
-        parent = document.getElementById(sensor_object)
-        let canvas = document.createElement("canvas")
-        canvas.classList.add("temp_graph")
-
-        let temperaturDaten = sensor_list[sensor_object];
-        if (temperaturDaten.length > 10) {
-            // Die ersten Elemente entfernen, bis die Liste eine Länge von 10 hat
-            temperaturDaten.splice(0, temperaturDaten.length - 10);
-        }
-
-        // Canvas-Element und 2D-Kontext abrufen
-        const context = canvas.getContext('2d');
-
-        // Funktion zum Zeichnen des Temperaturverlaufs
-        function zeichneTemperaturGraph() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-        
-            const breite = canvas.width;
-            const höhe = canvas.height;
-            const temperaturMax = 30; // Maximale Temperaturwert, den du anzeigen möchtest
-            const schrittY = 5; // Schrittgröße für die Y-Achse
-        
-            context.strokeStyle = 'blue';
-            context.lineWidth = 2;
-        
-            context.beginPath();
-            context.moveTo(0, höhe - (temperaturDaten[0] / temperaturMax) * höhe); // Verwende die volle Höhe
-        
-            const schritt = breite / (temperaturDaten.length - 1);
-        
-            for (let i = 0; i < temperaturDaten.length; i++) {
-                const x = i * schritt;
-                const y = höhe - (temperaturDaten[i] / temperaturMax) * höhe; // Skaliere die Temperatur auf die Canvas-Höhe
-                context.lineTo(x, y);
-        
-                // Zahlen an der Y-Achse (Temperatur)
-                //context.font = '12px Arial';
-                //context.fillText(temperaturDaten[i] + '°C', 10, y);
-        
-                // Zahlen an der X-Achse (Zeit)
-                context.fillText(i, x, höhe - 5);
-            }
-        
-            context.stroke();
-        
-            // Beschriftungen für Achsen hinzufügen
-            context.font = '14px Arial';
-            context.fillText('Temperatur', breite - 40, 10);
-            context.fillText('Zeit', breite - 40, höhe - 5);
-        
-            // Y-Achse-Beschriftungen
-            for (let i = 10; i <= temperaturMax; i += schrittY) {
-                const y = höhe - (i / temperaturMax) * höhe;
-                context.fillText(i + '°C', breite - 40, y);
-            }
-        }
-        
-
-        parent.appendChild(canvas)
-        zeichneTemperaturGraph();
+/* #################################
+    Show RFID Persons
+#################################### */
+websocket.on('rfid_data', function(data) {
+    if (global_view != "overview") {
+        return
     }
-});
 
+    sensor_list = JSON.parse(data)
+    console.log("new rfid data")
+    console.log(sensor_list)
+
+    const rfid_persons_div = document.getElementById("rfid_persons");
+    if (rfid_persons_div != null) {
+        rfid_persons_div.innerHTML = "";
+        sensor_element = document.getElementById("rfid_persons")
+    } else {
+        var sensor_element = document.createElement("div")
+        sensor_element.id = "rfid_persons";  
+        sensor_element.classList.add("sensorelement");
+    }
+    var parent = document.getElementById("sensorcontainer")
+
+    var caption = document.createElement("h2")
+    caption.innerHTML = "Personen im Haus"
+
+    var table_div = document.createElement("div")
+    var trennung = document.createElement("hr")
+        
+    var table = document.createElement("table")
+    table.classList.add("rfid_table")
+    var tr_head = document.createElement("tr")
+    var head_string = "<th>Bild</th><th>Name</th><th>Anwesenheit</th>"
+
+    tr_head.innerHTML = head_string;
+    table.appendChild(tr_head)
+
+    for (let sensor_object in sensor_list) {
+
+        var tr_sensor = document.createElement("tr") 
+        tr_sensor.id = "person_" + sensor_list[sensor_object]["value"]
+        var bild = document.createElement("td")
+        bild.innerHTML = "<img src='../static/persons/" + sensor_list[sensor_object]["uuid"] + ".jpeg' class='person_img'>"
+        var name = document.createElement("td")
+        name.innerHTML = sensor_list[sensor_object]["name"]
+        var value = document.createElement("td")
+        value.innerHTML = sensor_list[sensor_object]["value"]
+
+        tr_sensor.appendChild(bild)
+        tr_sensor.appendChild(name)
+        tr_sensor.appendChild(value)
+        table.appendChild(tr_sensor)
+
+    }             
+
+    table_div.appendChild(table)
+    sensor_element.appendChild(caption)
+    sensor_element.appendChild(trennung)
+    sensor_element.appendChild(table_div)
+    parent.appendChild(sensor_element)
+
+    
+});
