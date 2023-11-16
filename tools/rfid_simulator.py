@@ -5,9 +5,7 @@ import random
 
 persons_count = 0
 
-persons = {"Nils": 123144141,
-           "Basti": 55216134,
-           "Markus": 88394013}
+persons = [123144141, 55216134, 88394013]
 
 
 while True:
@@ -29,15 +27,11 @@ print("Sender aktiviert")
 
 
 while True:
-    keys=list(persons.keys())
     rdm_person_index = random.randint(0, persons_count-1)
-    print(keys[rdm_person_index])
-    print(persons[keys[rdm_person_index]])
 
-    sensor_data = {"name": keys[rdm_person_index],
-                    "type": "rfid",
+    sensor_data = {"type": "rfid",
                     "operation" : "update",
-                    "uuid": persons[keys[rdm_person_index]]}
+                    "uuid": persons[rdm_person_index]}
     client.publish("house/main", json.dumps(sensor_data))
     print(sensor_data)
 

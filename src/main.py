@@ -34,6 +34,7 @@ database = Session(bind=engine)
 # set global sensors
 global_temp_sensors = {}
 global_light_sensors = {}
+global_rfid_persons = {}
 
 
 
@@ -46,56 +47,54 @@ def mqtt_on_message_callback(client, userdata, message):
     decoded_message = message.payload.decode('utf-8')
     try:
         sensor_data = json.loads(decoded_message)
-        #print(sensor_data)
     except json.JSONDecodeError as e:
         print("Fehler beim Decodieren der Nachricht:", e)
         return
 
-    # Get Operation of Message
-    if sensor_data["operation"] == "update":
-
-        # Check if Sensor already exists in DB, if not create
-        db_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
-        if db_sensor == None:
-            new_sensor = Sensors(uuid=sensor_data['uuid'], 
-                                 name="Sensor-" + str(sensor_data["uuid"]), 
-                                 sensor_type=sensor_data["type"], renamed=False)
-            database.add(new_sensor)
-            database.commit()
-            #print(f"Sensor mit UUID: {sensor_data['uuid']} wurde der DB zugeführt")
-
-        # Update local Sensor Dict
-        # TODO: eventuell ganz darauf verzichten, alles nur mit DB? Basti fragen!
-        db_sensor_existing = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
-        local_sensor_dict = {"uuid": sensor_data["uuid"],
-                    "value": sensor_data["value"],
-                    "name": db_sensor_existing.name,
-                    "sensor_type": db_sensor_existing.sensor_type}
-        
-        # Add current value to correct dictionary
-        if local_sensor_dict["sensor_type"] == "temp":
-            global_temp_sensors[sensor_data["uuid"]] = local_sensor_dict
-        elif local_sensor_dict["sensor_type"] == "light":
-            global_light_sensors[sensor_data["uuid"]] = local_sensor_dict
-
-        # Write Logs if Necessary
-        current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
-        now = datetime.datetime.now()
-        formatted_time = now.strftime("%d %H %M")
-        last_sensor_logs = database.query(Sensor_logs).filter(Sensor_logs.sid == current_sensor.sid).all()
-        for sensor_object in last_sensor_logs:
-            if sensor_object.time == formatted_time:
-                pass
-                #return
-            
-        new_sensor_commit = Sensor_logs(sid = current_sensor.sid,
-                                        time = formatted_time, 
-                                        value = sensor_data["value"])
-        database.add(new_sensor_commit)
+    
+    # Check if Sensor already exists in DB, if not create
+    db_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
+    if db_sensor == None:
+        new_sensor = Sensors(uuid=sensor_data['uuid'], 
+                                name=sensor_data["type"] + "-" + str(sensor_data["uuid"]), 
+                                sensor_type=sensor_data["type"], renamed=False)
+        database.add(new_sensor)
         database.commit()
 
-        #print(f"Temperatur: \n {global_temp_sensors}")
-        #print(f"Licht: \n {global_light_sensors}")
+    # Update local Sensor Dict
+    # TODO: eventuell ganz darauf verzichten, alles nur mit DB? Basti fragen!
+    db_sensor_existing = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
+    local_sensor_dict = {"uuid": sensor_data["uuid"],
+                "value": sensor_data["value"] if "value" in sensor_data != None else "empty",
+                "name": db_sensor_existing.name,
+                "sensor_type": db_sensor_existing.sensor_type}
+    
+    print(local_sensor_dict)
+    
+    # Add current value to correct dictionary
+    if local_sensor_dict["sensor_type"] == "temp":
+        global_temp_sensors[sensor_data["uuid"]] = local_sensor_dict
+    elif local_sensor_dict["sensor_type"] == "light":
+        global_light_sensors[sensor_data["uuid"]] = local_sensor_dict
+    elif local_sensor_dict["sensor_type"] == "rfid":
+        global_rfid_persons[sensor_data["uuid"]] = local_sensor_dict
+
+    # Write Logs if Necessary
+    current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
+    now = datetime.datetime.now()
+    formatted_time = now.strftime("%d %H %M")
+    last_sensor_logs = database.query(Sensor_logs).filter(Sensor_logs.sid == current_sensor.sid).all()
+    for sensor_object in last_sensor_logs:
+        if sensor_object.time == formatted_time:
+            pass
+            #return
+        
+    new_sensor_commit = Sensor_logs(sid = current_sensor.sid,
+                                    time = formatted_time, 
+                                    value = sensor_data["value"] if "value" in sensor_data != None else "empty")
+    database.add(new_sensor_commit)
+    database.commit()
+
 
 
 

@@ -52,6 +52,8 @@ websocket.on('sensors', function(data) {
         rename_img.onclick = function() {rename_sensor(sensor_list[sensor_object]["uuid"], sensor_list[sensor_object]["name"]);}
         img.appendChild(rename_img)
 
+        tr_sensor.id = "renaming_" + sensor_list[sensor_object]["type"]
+
         tr_sensor.appendChild(uuid)
         tr_sensor.appendChild(type)
         tr_sensor.appendChild(name)

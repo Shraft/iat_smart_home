@@ -54,6 +54,18 @@
     text-align: center;
 }
 
+#renaming_temp {
+    color: green;
+}
+
+#renaming_light {
+    color: orangered;
+}
+
+#renaming_rfid {
+    color: purple;
+}
+
 .sensor_actions {
     width: 20px;
     height: 20px;
