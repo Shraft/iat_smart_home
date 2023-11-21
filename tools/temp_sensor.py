@@ -2,11 +2,20 @@ import time
 import paho.mqtt.client as mqtt
 import json
 import random
+import argparse
 
 uuid_list = [44444,55555,66666,77777,88888]
+sensor_count = 0
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--count", help='sensorcount', default=3)
+args = parser.parse_args()
+arg_count = int(args.count)
 
 while True:
+    if arg_count > 0 and arg_count <=5:
+        sensor_count = arg_count
+        break
     eingabe = input("Anzahl Sensoren? [1-5]: ")
 
     try:

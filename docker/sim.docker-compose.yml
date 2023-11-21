@@ -1,0 +1,31 @@
+version: "2.1"
+
+services:
+   temp:
+      build:
+         context: ..
+         dockerfile: ./docker/temp_service
+      image: temp_service
+      restart: always
+      container_name: temp_container
+      network_mode: "host"
+
+   light:
+      build:
+         context: ..
+         dockerfile: ./docker/light_service
+      image: light_service
+      restart: always
+      container_name: light_container
+      network_mode: "host"
+
+   rfid:
+      build:
+         context: ..
+         dockerfile: ./docker/rfid_service
+      image: rfid_service
+      restart: always
+      container_name: rfid_container
+      network_mode: "host"
+
+

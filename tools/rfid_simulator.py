@@ -2,13 +2,23 @@ import time
 import paho.mqtt.client as mqtt
 import json
 import random
+import argparse
 
 persons_count = 0
 
 persons = [123144141, 55216134, 88394013]
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--count", help='sensorcount', default=3)
+args = parser.parse_args()
+arg_count = int(args.count)
+
 while True:
+    if arg_count > 0 and arg_count <=3:
+        persons_count = arg_count
+        break
+
     eingabe = input("Anzahl Personen? [1-3]: ")
 
     try:
