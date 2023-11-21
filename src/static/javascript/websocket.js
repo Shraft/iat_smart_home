@@ -130,6 +130,84 @@ websocket.on('temp_sensor_data', function(data) {
 /* #################################
     Show Light Sensors
 #################################### */
+
+function updateColor(r,g,b, uuid) {
+    var red = document.getElementById(r).value;
+    var green = document.getElementById(g).value;
+    var blue = document.getElementById(b).value;
+    var colorDisplay = document.getElementById('color-display_' + uuid);
+    colorDisplay.style.backgroundColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+    var colorDisplay = document.getElementById('controls_' + uuid);
+    colorDisplay.style.borderColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+}
+
+
+function insert_rgb_input(uuid){
+    var controls = document.createElement("div")
+    controls.id = "controls_" + uuid
+    controls.classList.add("controls")
+    var sliders = document.createElement("div")
+    sliders.id = "sliders_" + uuid
+    sliders.classList.add("sliders")
+
+    var red_label = document.createElement("label")
+    red_label.innerHTML = "Red:"
+    var red_slider = document.createElement("input")
+    red_slider.type = "range"
+    red_slider.id = "red_" + uuid
+    red_slider.min = "0"
+    red_slider.max = "255"
+    red_slider.value = "0"
+    var br = document.createElement("br")
+
+    sliders.appendChild(red_label)
+    sliders.appendChild(red_slider)
+    sliders.appendChild(br)
+
+    var green_label = document.createElement("label")
+    green_label.innerHTML = "Green:"
+    var green_slider = document.createElement("input")
+    green_slider.type = "range"
+    green_slider.id = "green_" + uuid
+    green_slider.min = "0"
+    green_slider.max = "255"
+    green_slider.value = "0"
+    var br = document.createElement("br")
+
+    sliders.appendChild(green_label)
+    sliders.appendChild(green_slider)
+    sliders.appendChild(br)
+
+    var blue_label = document.createElement("label")
+    blue_label.innerHTML = "Blue:"
+    var blue_slider = document.createElement("input")
+    blue_slider.type = "range"
+    blue_slider.id = "blue_" + uuid
+    blue_slider.min = "0"
+    blue_slider.max = "255"
+    blue_slider.value = "0"
+    var br = document.createElement("br")
+
+    sliders.appendChild(blue_label)
+    sliders.appendChild(blue_slider)
+    sliders.appendChild(br)
+
+    var apply_button = document.createElement("button")
+    apply_button.onclick = function(){updateColor("red_" + uuid, "green_" + uuid, "blue_" + uuid, uuid);}
+    apply_button.innerHTML = "Send"
+
+    sliders.appendChild(apply_button)
+
+    var color_display = document.createElement("div")
+    color_display.classList.add("color-display")
+    color_display.id = "color-display_" + uuid
+
+    controls.appendChild(sliders)
+    controls.appendChild(color_display)
+
+    return controls
+}
+
 websocket.on('light_sensor_data', function(data) {
     if (global_view != "overview") {
         return
@@ -155,16 +233,25 @@ websocket.on('light_sensor_data', function(data) {
     var sensors = document.createElement("div")
 
     for (let sensor_object in sensor_list) {
+        var uuid = sensor_list[sensor_object]["uuid"]
+
         var sensor_div = document.createElement("div")
-        sensor_div.id = sensor_list[sensor_object]["uuid"]
+        sensor_div.id = uuid
         var trennung = document.createElement("hr")
-        var temp_caption = document.createElement("p")
-        temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "% Licht"
-        console.log(sensor_list[sensor_object]["name"])
+
+        var details = document.createElement("details")
+        var summary = document.createElement("summary")
+
+        summary.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "% Licht"
+
+
+        controls = insert_rgb_input(uuid)
+        
         sensors.appendChild(sensor_div)
         sensor_div.appendChild(trennung)
-        sensor_div.appendChild(temp_caption)
-               
+        details.appendChild(summary)
+        details.appendChild(controls)
+        sensors.appendChild(details)
     }
 
     sensor_element.appendChild(caption)

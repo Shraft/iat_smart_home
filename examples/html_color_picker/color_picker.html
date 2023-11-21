@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RGB Color Picker</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    #controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 20%;
+      left: 40%;
+      border-radius: 20px;
+      background-color: aliceblue;
+      border: 5px solid #000;
+    }
+    #sliders {
+      width: 100%;
+    }
+    #color-display {
+      width: 30%;
+      height: 60px;
+      border: 2px solid #000;
+      border-radius: 20px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>RGB Color Picker</h2>
+  
+  <div id="controls">
+    <div id="sliders">
+      <label for="red">Red:</label>
+      <input type="range" id="red" min="0" max="255" value="0">
+      <br>
+
+      <label for="green">Green:</label>
+      <input type="range" id="green" min="0" max="255" value="0">
+      <br>
+
+      <label for="blue">Blue:</label>
+      <input type="range" id="blue" min="0" max="255" value="0">
+      <br>
+    </div>
+
+    <div id="color-display"></div>
+  </div>
+
+  <script>
+    function updateColor() {
+      var red = document.getElementById('red').value;
+      var green = document.getElementById('green').value;
+      var blue = document.getElementById('blue').value;
+      var colorDisplay = document.getElementById('color-display');
+      colorDisplay.style.backgroundColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+      var colorDisplay = document.getElementById('controls');
+      colorDisplay.style.borderColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+    }
+
+    document.getElementById('red').addEventListener('input', updateColor);
+    document.getElementById('green').addEventListener('input', updateColor);
+    document.getElementById('blue').addEventListener('input', updateColor);
+
+    updateColor();
+  </script>
+</body>
+</html>
