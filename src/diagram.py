@@ -12,7 +12,7 @@ def create_diagram(sensor_history, uuid):
     k = len(sensor_history)
     x_list = []
 
-    for n in range(0, k):
+    for n in range(0-k, 0):
         x_list.append(n)
 
     df = pd.DataFrame(dict(

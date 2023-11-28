@@ -1,5 +1,6 @@
 const websocket = io.connect('http://localhost:8080');
 var global_view = "overview"
+var global_details = {}
 
 websocket.on('connect', function(data) {
     console.log(data)
@@ -15,8 +16,6 @@ function ws_send_on_navigation_change(content){
     websocket.emit(content,"")
 }
 
-
-
 function prepare_sensor_visualisation(sensorType) {
     if (global_view !== "overview") {
         return null;
@@ -24,6 +23,14 @@ function prepare_sensor_visualisation(sensorType) {
 
     const sensorsDiv = document.getElementById(sensorType);
     var sensorElement;
+
+    // speichere ausgeklappte menus
+    var detailsTags = document.querySelectorAll('details');
+    detailsTags.forEach(function(detailsTag) {
+        if (detailsTag != null){
+            global_details[detailsTag.id] = detailsTag.open;
+        }
+    });
 
     if (sensorsDiv !== null) {
         sensorsDiv.innerHTML = "";
@@ -36,51 +43,16 @@ function prepare_sensor_visualisation(sensorType) {
     return sensorElement;
 }
 
-/* #################################
-    List All Sensors to rename them
-#################################### */
-websocket.on('sensors', function(data) {
-    if (global_view != "sensors") {
-        return
-    }
-    sensor_list = JSON.parse(data)
+function repair_sensor_visualisation(){
+    // hole alle menus
+    var detailsTags = document.querySelectorAll('details');
+    detailsTags.forEach(function(detailsTag) {
+        var tag_value = global_details[detailsTag.id]
+        detailsTag.open = tag_value
+    });
+}
 
-    const sensor_container = document.getElementById("sensorcontainer");
-    sensor_container.innerHTML = "";
 
-    var table = document.createElement("table")
-    table.classList.add("sensorelement_renaming")
-    var tr_head = document.createElement("tr")
-    var head_string = "<th>UUID</th><th>Type</th><th>Name</th><th>Actions</th>"
-
-    tr_head.innerHTML = head_string;
-    table.appendChild(tr_head)
-
-    for (let sensor_object in sensor_list) {
-        var tr_sensor = document.createElement("tr") 
-        var uuid = document.createElement("td")
-        uuid.innerHTML = sensor_list[sensor_object]["uuid"]
-        var name = document.createElement("td")
-        name.innerHTML = sensor_list[sensor_object]["name"]
-        var type = document.createElement("td")
-        type.innerHTML = sensor_list[sensor_object]["type"]
-
-        let img = document.createElement("td")
-        let rename_img = Object.assign(new Image(), {
-            src: "../static/img/bleistift.png",
-            className: "sensor_actions",
-            onclick: function() {rename_sensor(sensor_list[sensor_object].uuid, sensor_list[sensor_object].name);}
-          });
-        img.appendChild(rename_img)
-
-        tr_sensor.id = "renaming_" + sensor_list[sensor_object]["type"]
-
-        tr_sensor.append(uuid, type, name, img)
-        table.appendChild(tr_sensor)
-    }
-
-    sensor_container.appendChild(table)
-})
 
 
 /* #################################
@@ -104,7 +76,6 @@ websocket.on('temp_sensor_data', function(data) {
         sensor_div.id = sensor_list[sensor_object]["uuid"]
         var temp_caption = document.createElement("summary")
         temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "°C"
-        console.log(sensor_list[sensor_object]["name"])
         sensors.append(trennung, sensor_div)
         
         sensor_div.appendChild(temp_caption)
@@ -112,12 +83,13 @@ websocket.on('temp_sensor_data', function(data) {
         var chart = document.createElement("iframe")
         chart.classList.add("chart")
         var chart_string = "../static/charts/" + sensor_object + ".html"
-        console.log(chart_string)
         chart.src = chart_string
         sensor_div.appendChild(chart)
     }
     sensor_element.append(caption, sensors)
     parent.appendChild(sensor_element)
+
+    repair_sensor_visualisation();
 });
 
 
@@ -190,6 +162,7 @@ websocket.on('light_sensor_data', function(data) {
         sensor_div.id = uuid
         var trennung = document.createElement("hr")
         var details = document.createElement("details")
+        details.id = sensor_list[sensor_object]["uuid"]
         var summary = document.createElement("summary")
         summary.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "% Licht"
         controls = insert_rgb_input(uuid)
@@ -202,6 +175,8 @@ websocket.on('light_sensor_data', function(data) {
 
     sensor_element.append(caption,sensors)
     parent.appendChild(sensor_element)
+
+    repair_sensor_visualisation();
 });
 
 
@@ -243,3 +218,52 @@ websocket.on('rfid_data', function(data) {
     sensor_element.append(caption,trennung,table_div)
     parent.appendChild(sensor_element) 
 });
+
+
+
+
+/* #################################
+    List All Sensors to rename them
+#################################### */
+websocket.on('sensors', function(data) {
+    if (global_view != "sensors") {
+        return
+    }
+    sensor_list = JSON.parse(data)
+
+    const sensor_container = document.getElementById("sensorcontainer");
+    sensor_container.innerHTML = "";
+
+    var table = document.createElement("table")
+    table.classList.add("sensorelement_renaming")
+    var tr_head = document.createElement("tr")
+    var head_string = "<th>UUID</th><th>Type</th><th>Name</th><th>Actions</th>"
+
+    tr_head.innerHTML = head_string;
+    table.appendChild(tr_head)
+
+    for (let sensor_object in sensor_list) {
+        var tr_sensor = document.createElement("tr") 
+        var uuid = document.createElement("td")
+        uuid.innerHTML = sensor_list[sensor_object]["uuid"]
+        var name = document.createElement("td")
+        name.innerHTML = sensor_list[sensor_object]["name"]
+        var type = document.createElement("td")
+        type.innerHTML = sensor_list[sensor_object]["type"]
+
+        let img = document.createElement("td")
+        let rename_img = Object.assign(new Image(), {
+            src: "../static/img/bleistift.png",
+            className: "sensor_actions",
+            onclick: function() {rename_sensor(sensor_list[sensor_object].uuid, sensor_list[sensor_object].name);}
+          });
+        img.appendChild(rename_img)
+
+        tr_sensor.id = "renaming_" + sensor_list[sensor_object]["type"]
+
+        tr_sensor.append(uuid, type, name, img)
+        table.appendChild(tr_sensor)
+    }
+
+    sensor_container.appendChild(table)
+})
