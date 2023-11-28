@@ -36,6 +36,10 @@ global_temp_sensors = {}
 global_light_sensors = {}
 global_rfid_persons = {}
 
+# mqtt message outgoin
+
+mqtt_message_queue = []
+
 
 
 # -------------------
@@ -50,6 +54,11 @@ def mqtt_on_message_callback(client, userdata, message):
     except json.JSONDecodeError as e:
         print("Fehler beim Decodieren der Nachricht:", e)
         return
+    
+    # Wenn nicht für Zentrale
+    if "addresse" in sensor_data:
+        if sensor_data["addresse"] == "slave":
+            return
 
     
     # Check if Sensor already exists in DB, if not create
@@ -118,7 +127,12 @@ def start_mqtt():
     client.publish("house/main", "Die Zentrale ist jetzt online")  
 
     while True:
-        pass
+        print(f"check queue: {len(mqtt_message_queue)}")
+        if len(mqtt_message_queue) != 0:
+            client.publish("house/main", json.dumps(mqtt_message_queue[0]))
+            mqtt_message_queue.pop(0)
+        time.sleep(1)
+
 
     client.loop_stop()                     
     sclient.disconnect()                   
@@ -168,6 +182,12 @@ def rename_sensor(auth):
     db_sensor = database.query(Sensors).filter(Sensors.uuid == data["uuid"]).first()
     db_sensor.name = data["new_name"]
     database.commit
+
+@websocket.on('set_rgb')
+def set_rgb(auth):
+    data = json.loads(auth)
+    
+    mqtt_message_queue.append(data)
 
 # Main initialazing
 if __name__ == '__main__':

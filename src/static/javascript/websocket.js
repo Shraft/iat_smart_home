@@ -139,6 +139,11 @@ function updateColor(r,g,b, uuid) {
     colorDisplay.style.backgroundColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
     var colorDisplay = document.getElementById('controls_' + uuid);
     colorDisplay.style.borderColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+
+    var data = {"uuid": uuid, "addresse": "slave",
+                "r": red, "g": green, "b": blue}
+    websocket.emit("set_rgb", JSON.stringify(data))
+
 }
 
 
