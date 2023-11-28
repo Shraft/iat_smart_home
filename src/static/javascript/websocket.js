@@ -5,7 +5,7 @@ websocket.on('connect', function(data) {
     console.log(data)
 });
 
-function ws_send(content){
+function ws_send_on_navigation_change(content){
     if (content == "get_overview") {
         global_view = "overview"
     } else if (content == "get_sensors") {
@@ -17,6 +17,25 @@ function ws_send(content){
 
 
 
+function prepare_sensor_visualisation(sensorType) {
+    if (global_view !== "overview") {
+        return null;
+    }
+
+    const sensorsDiv = document.getElementById(sensorType);
+    var sensorElement;
+
+    if (sensorsDiv !== null) {
+        sensorsDiv.innerHTML = "";
+        sensorElement = document.getElementById(sensorType);
+    } else {
+        sensorElement = document.createElement("div");
+        sensorElement.id = sensorType;
+        sensorElement.classList.add("sensorelement");
+    }
+    return sensorElement;
+}
+
 /* #################################
     List All Sensors to rename them
 #################################### */
@@ -24,9 +43,7 @@ websocket.on('sensors', function(data) {
     if (global_view != "sensors") {
         return
     }
-
     sensor_list = JSON.parse(data)
-    console.log(sensor_list) 
 
     const sensor_container = document.getElementById("sensorcontainer");
     sensor_container.innerHTML = "";
@@ -40,7 +57,6 @@ websocket.on('sensors', function(data) {
     table.appendChild(tr_head)
 
     for (let sensor_object in sensor_list) {
-
         var tr_sensor = document.createElement("tr") 
         var uuid = document.createElement("td")
         uuid.innerHTML = sensor_list[sensor_object]["uuid"]
@@ -50,20 +66,17 @@ websocket.on('sensors', function(data) {
         type.innerHTML = sensor_list[sensor_object]["type"]
 
         let img = document.createElement("td")
-        let rename_img = new Image();
-        rename_img.src = "../static/img/bleistift.png"
-        rename_img.classList.add("sensor_actions")
-        rename_img.onclick = function() {rename_sensor(sensor_list[sensor_object]["uuid"], sensor_list[sensor_object]["name"]);}
+        let rename_img = Object.assign(new Image(), {
+            src: "../static/img/bleistift.png",
+            className: "sensor_actions",
+            onclick: function() {rename_sensor(sensor_list[sensor_object].uuid, sensor_list[sensor_object].name);}
+          });
         img.appendChild(rename_img)
 
         tr_sensor.id = "renaming_" + sensor_list[sensor_object]["type"]
 
-        tr_sensor.appendChild(uuid)
-        tr_sensor.appendChild(type)
-        tr_sensor.appendChild(name)
-        tr_sensor.appendChild(img)
+        tr_sensor.append(uuid, type, name, img)
         table.appendChild(tr_sensor)
-
     }
 
     sensor_container.appendChild(table)
@@ -74,25 +87,12 @@ websocket.on('sensors', function(data) {
     Show Temperatur Sensors
 #################################### */
 websocket.on('temp_sensor_data', function(data) {
-    if (global_view != "overview") {
-        return
-    }
-
     sensor_list = JSON.parse(data)
-    console.log(sensor_list)
 
-    const temp_sensors_div = document.getElementById("temp_sensors");
-    // IF TempSensor div existiert schon
-    if (temp_sensors_div != null) {
-        temp_sensors_div.innerHTML = "";
-        sensor_element = document.getElementById("temp_sensors")
-    // IF TempSensor div existiert noch nicht    
-    } else {
-        var sensor_element = document.createElement("div")
-        sensor_element.id = "temp_sensors";  
-        sensor_element.classList.add("sensorelement");
-    }
-    var parent = document.getElementById("sensorcontainer")
+    let sensor_element = prepare_sensor_visualisation("temp_sensors");
+    if (sensor_element== null) {return}
+
+    var parent = document.getElementById("sensorcontainer");
 
     var caption = document.createElement("h2")
     caption.innerHTML = "Temperatur-Sensoren"
@@ -105,24 +105,18 @@ websocket.on('temp_sensor_data', function(data) {
         var temp_caption = document.createElement("summary")
         temp_caption.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "°C"
         console.log(sensor_list[sensor_object]["name"])
-        sensors.appendChild(trennung)
-        sensors.appendChild(sensor_div)
+        sensors.append(trennung, sensor_div)
         
         sensor_div.appendChild(temp_caption)
         
-
-        console.log("image")
         var chart = document.createElement("iframe")
         chart.classList.add("chart")
         var chart_string = "../static/charts/" + sensor_object + ".html"
         console.log(chart_string)
         chart.src = chart_string
         sensor_div.appendChild(chart)
-       
     }
-
-    sensor_element.appendChild(caption)
-    sensor_element.appendChild(sensors)
+    sensor_element.append(caption, sensors)
     parent.appendChild(sensor_element)
 });
 
@@ -130,7 +124,6 @@ websocket.on('temp_sensor_data', function(data) {
 /* #################################
     Show Light Sensors
 #################################### */
-
 function updateColor(r,g,b, uuid) {
     var red = document.getElementById(r).value;
     var green = document.getElementById(g).value;
@@ -143,163 +136,91 @@ function updateColor(r,g,b, uuid) {
     var data = {"uuid": uuid, "addressee": "slave",
                 "r": red, "g": green, "b": blue}
     websocket.emit("set_rgb", JSON.stringify(data))
-
 }
 
+function insert_rgb_input(uuid) {
+    function createSlider(label, id) {
+        var sliderLabel = document.createElement("label");
+        sliderLabel.innerHTML = label + ":";
+        var slider = document.createElement("input");
+        slider.type = "range";
+        slider.id = id + "_" + uuid;
+        slider.min = "0";
+        slider.max = "255";
+        slider.value = "0";
+        return [sliderLabel, slider, document.createElement("br")];
+    }
 
-function insert_rgb_input(uuid){
-    var controls = document.createElement("div")
-    controls.id = "controls_" + uuid
-    controls.classList.add("controls")
-    var sliders = document.createElement("div")
-    sliders.id = "sliders_" + uuid
-    sliders.classList.add("sliders")
+    var controls = Object.assign(document.createElement("div"), { id: "controls_" + uuid, className: "controls" });
+    var sliders = Object.assign(document.createElement("div"), { id: "sliders_" + uuid, className: "sliders" });
 
-    var red_label = document.createElement("label")
-    red_label.innerHTML = "Red:"
-    var red_slider = document.createElement("input")
-    red_slider.type = "range"
-    red_slider.id = "red_" + uuid
-    red_slider.min = "0"
-    red_slider.max = "255"
-    red_slider.value = "0"
-    var br = document.createElement("br")
+    var [redLabel, redSlider, redBreak] = createSlider("Red", "red");
+    var [greenLabel, greenSlider, greenBreak] = createSlider("Green", "green");
+    var [blueLabel, blueSlider, blueBreak] = createSlider("Blue", "blue");
 
-    sliders.appendChild(red_label)
-    sliders.appendChild(red_slider)
-    sliders.appendChild(br)
+    sliders.append(redLabel, redSlider, redBreak, greenLabel, greenSlider, greenBreak, blueLabel, blueSlider, blueBreak);
 
-    var green_label = document.createElement("label")
-    green_label.innerHTML = "Green:"
-    var green_slider = document.createElement("input")
-    green_slider.type = "range"
-    green_slider.id = "green_" + uuid
-    green_slider.min = "0"
-    green_slider.max = "255"
-    green_slider.value = "0"
-    var br = document.createElement("br")
+    var applyButton = Object.assign(document.createElement("button"), {
+        onclick: () => updateColor(`red_${uuid}`, `green_${uuid}`, `blue_${uuid}`, uuid),
+        innerHTML: "Übernehmen"
+      });
+    sliders.appendChild(applyButton);
 
-    sliders.appendChild(green_label)
-    sliders.appendChild(green_slider)
-    sliders.appendChild(br)
+    var colorDisplay = Object.assign(document.createElement("div"), {className: "color-display", id: `color-display_${uuid}`});
+      
+    controls.append(sliders, colorDisplay);
 
-    var blue_label = document.createElement("label")
-    blue_label.innerHTML = "Blue:"
-    var blue_slider = document.createElement("input")
-    blue_slider.type = "range"
-    blue_slider.id = "blue_" + uuid
-    blue_slider.min = "0"
-    blue_slider.max = "255"
-    blue_slider.value = "0"
-    var br = document.createElement("br")
-
-    sliders.appendChild(blue_label)
-    sliders.appendChild(blue_slider)
-    sliders.appendChild(br)
-
-    var apply_button = document.createElement("button")
-    apply_button.onclick = function(){updateColor("red_" + uuid, "green_" + uuid, "blue_" + uuid, uuid);}
-    apply_button.innerHTML = "Send"
-
-    sliders.appendChild(apply_button)
-
-    var color_display = document.createElement("div")
-    color_display.classList.add("color-display")
-    color_display.id = "color-display_" + uuid
-
-    controls.appendChild(sliders)
-    controls.appendChild(color_display)
-
-    return controls
+    return controls;
 }
+
 
 websocket.on('light_sensor_data', function(data) {
-    if (global_view != "overview") {
-        return
-    }
-
     sensor_list = JSON.parse(data)
-    console.log("new light sensor data")
-    console.log(sensor_list)
 
-    const light_sensors_div = document.getElementById("light_sensors");
-    if (light_sensors_div != null) {
-        light_sensors_div.innerHTML = "";
-        sensor_element = document.getElementById("light_sensors")
-    } else {
-        var sensor_element = document.createElement("div")
-        sensor_element.id = "light_sensors";  
-        sensor_element.classList.add("sensorelement");
-    }
-    var parent = document.getElementById("sensorcontainer")
+    let sensor_element = prepare_sensor_visualisation("light_sensors");
+    if (sensor_element== null) {return}
 
-    var caption = document.createElement("h2")
-    caption.innerHTML = "Helligkeits-Sensoren"
+    var parent = document.getElementById("sensorcontainer");
+    var caption = Object.assign(document.createElement("h2"), { innerHTML: "Helligkeits-Sensoren" });
     var sensors = document.createElement("div")
 
     for (let sensor_object in sensor_list) {
         var uuid = sensor_list[sensor_object]["uuid"]
-
         var sensor_div = document.createElement("div")
         sensor_div.id = uuid
         var trennung = document.createElement("hr")
-
         var details = document.createElement("details")
         var summary = document.createElement("summary")
-
         summary.innerHTML = sensor_list[sensor_object]["name"] + ": " + sensor_list[sensor_object]["value"] + "% Licht"
-
-
         controls = insert_rgb_input(uuid)
         
         sensors.appendChild(sensor_div)
         sensor_div.appendChild(trennung)
-        details.appendChild(summary)
-        details.appendChild(controls)
+        details.append(summary,controls)
         sensors.appendChild(details)
     }
 
-    sensor_element.appendChild(caption)
-    sensor_element.appendChild(sensors)
+    sensor_element.append(caption,sensors)
     parent.appendChild(sensor_element)
 });
-
 
 
 /* #################################
     Show RFID Persons
 #################################### */
 websocket.on('rfid_data', function(data) {
-    if (global_view != "overview") {
-        return
-    }
-
     sensor_list = JSON.parse(data)
-    console.log("new rfid data")
-    console.log(sensor_list)
 
-    const rfid_persons_div = document.getElementById("rfid_persons");
-    if (rfid_persons_div != null) {
-        rfid_persons_div.innerHTML = "";
-        sensor_element = document.getElementById("rfid_persons")
-    } else {
-        var sensor_element = document.createElement("div")
-        sensor_element.id = "rfid_persons";  
-        sensor_element.classList.add("sensorelement");
-    }
-    var parent = document.getElementById("sensorcontainer")
+    let sensor_element = prepare_sensor_visualisation("rfid_persons");
+    if (sensor_element== null) {return}
 
-    var caption = document.createElement("h2")
-    caption.innerHTML = "Personen im Haus"
-
+    var parent = document.getElementById("sensorcontainer");
+    var caption = Object.assign(document.createElement("h2"), { innerHTML: "Personen im Haus" });
     var table_div = document.createElement("div")
     var trennung = document.createElement("hr")
-        
-    var table = document.createElement("table")
-    table.classList.add("rfid_table")
+    var table = Object.assign(document.createElement("table"), { className: "rfid_table" });
     var tr_head = document.createElement("tr")
     var head_string = "<th>Bild</th><th>Name</th><th>Anwesenheit</th>"
-
     tr_head.innerHTML = head_string;
     table.appendChild(tr_head)
 
@@ -314,18 +235,11 @@ websocket.on('rfid_data', function(data) {
         var value = document.createElement("td")
         value.innerHTML = sensor_list[sensor_object]["value"]
 
-        tr_sensor.appendChild(bild)
-        tr_sensor.appendChild(name)
-        tr_sensor.appendChild(value)
+        tr_sensor.append(bild,name,value)
         table.appendChild(tr_sensor)
-
     }             
 
     table_div.appendChild(table)
-    sensor_element.appendChild(caption)
-    sensor_element.appendChild(trennung)
-    sensor_element.appendChild(table_div)
-    parent.appendChild(sensor_element)
-
-    
+    sensor_element.append(caption,trennung,table_div)
+    parent.appendChild(sensor_element) 
 });

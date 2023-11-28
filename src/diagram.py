@@ -21,11 +21,7 @@ def create_diagram(sensor_history, uuid):
 
 
     fig = px.line(df, x="Zeit", y="Temperatur",) 
-    #fig.show()
-
-    #fig = px.scatter(x=range(10), y=range(10))
     path = f"src/static/charts/{uuid}.html"
-    print(f"safe to path: {path}")
     fig.write_html(path)
 
 
@@ -58,12 +54,12 @@ def create_diagrams(database):
             k = 20
             while len(temp_sensors_value_history[sensor]) > k:
                 temp_sensors_value_history[sensor].pop(0)
-            print(f"DIAGRAMS: create Diagram for {sensor}")
+            #print(f"DIAGRAMS: create Diagram for {sensor}")
             start_time = datetime.now()
             create_diagram(temp_sensors_value_history[sensor], sensor)
             end_time = datetime.now()
             time_diff = end_time - start_time
-            print(f"DIAGRAMS: Done in {time_diff} seconds")
+            #print(f"DIAGRAMS: Done in {time_diff} seconds")
 
 
         time.sleep(60)

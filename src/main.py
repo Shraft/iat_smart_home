@@ -1,10 +1,9 @@
 import time
 import threading
 import paho.mqtt.client as mqtt
-from flask import Flask, render_template, jsonify, request
+from flask import Flask
 from flask_socketio import SocketIO
 from flask_restful import Api
-from flask import Flask, render_template, redirect
 from routes import Basic
 import json
 from sqlalchemy import create_engine
@@ -36,17 +35,14 @@ global_temp_sensors = {}
 global_light_sensors = {}
 global_rfid_persons = {}
 
-# mqtt message outgoin
-
+# mqtt message outgoing
 mqtt_message_queue = []
 
 
-
-# -------------------
+# ----------------------------------------------------------------------------------------------------------------------
 # MQTT MSG income functions
-# -------------------
+# ----------------------------------------------------------------------------------------------------------------------
 def mqtt_on_message_callback(client, userdata, message):
-
     # Decode Message from MQTT
     decoded_message = message.payload.decode('utf-8')
     try:
@@ -105,16 +101,12 @@ def mqtt_on_message_callback(client, userdata, message):
     for sensor_object in last_sensor_logs:
         if sensor_object.time == formatted_time:
             pass
-            #return
         
     new_sensor_commit = Sensor_logs(sid = current_sensor.sid,
                                     time = formatted_time, 
                                     value = sensor_data["value"] if "value" in sensor_data != None else "empty")
     database.add(new_sensor_commit)
     database.commit()
-
-
-
 
 def start_mqtt():
     # start mqtt
@@ -133,15 +125,9 @@ def start_mqtt():
         time.sleep(1)
 
 
-    client.loop_stop()                     
-    sclient.disconnect()                   
-
-
-
-# -------------------
+# ----------------------------------------------------------------------------------------------------------------------
 # Websocket functions
-# -------------------
-
+# ----------------------------------------------------------------------------------------------------------------------
 @websocket.on('connect')
 def on_connect(auth):
     print("new Connection")
@@ -150,7 +136,7 @@ def on_connect(auth):
 @websocket.on('get_sensor_data')
 @websocket.on('get_overview')
 def on_get_sensor_data(auth):
-    print(f"WS: emit {global_temp_sensors}")
+    print(f"WS: emit infos {global_temp_sensors}")
     if global_temp_sensors:
         websocket.emit("temp_sensor_data", json.dumps(global_temp_sensors))
     if global_light_sensors:
@@ -161,33 +147,44 @@ def on_get_sensor_data(auth):
 
 @websocket.on('get_sensors')
 def get_sensors(auth):
-    print("get sensors requestet")
     sensor_list = database.query(Sensors).all()
-
     response_dict = {}
     
     for sensor in sensor_list:
         response_dict[sensor.uuid] = {"type": sensor.sensor_type,
                                       "uuid": sensor.uuid,
                                       "name": sensor.name}
+    
+    print(f"WS: emit sensors {response_dict}")
 
     websocket.emit("sensors", json.dumps(response_dict))
 
 @websocket.on('rename_sensor')
 def rename_sensor(auth):
-    print("sensor umbenennen")
     data = json.loads(auth)
+    print(f"sensor umbenennen: {data['uuid']} mit {data['new_name']}")
 
     db_sensor = database.query(Sensors).filter(Sensors.uuid == data["uuid"]).first()
     db_sensor.name = data["new_name"]
     database.commit
+
+    if data["uuid"] in global_light_sensors:
+        global_light_sensors[data["uuid"]]["name"] = data["new_name"] 
+    if data["uuid"] in global_rfid_persons:
+        global_rfid_persons[data["uuid"]]["name"] = data["new_name"]
+    if data["uuid"] in global_temp_sensors:
+        global_temp_sensors[data["uuid"]]["name"] = data["new_name"] 
+
 
 @websocket.on('set_rgb')
 def set_rgb(auth):
     data = json.loads(auth)
     mqtt_message_queue.append(data)
 
+
+# ----------------------------------------------------------------------------------------------------------------------
 # Main initialazing
+# ----------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     game_loop_thread = threading.Thread(target=start_mqtt)
     game_loop_thread.daemon = True
@@ -197,5 +194,4 @@ if __name__ == '__main__':
     diagram_thread.daemon = True
     diagram_thread.start()
 
-    print("Threads gestartet")
     websocket.run(app, host='0.0.0.0', port=8080, debug=False, allow_unsafe_werkzeug=True) 
