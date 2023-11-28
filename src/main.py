@@ -56,8 +56,8 @@ def mqtt_on_message_callback(client, userdata, message):
         return
     
     # Wenn nicht für Zentrale
-    if "addresse" in sensor_data:
-        if sensor_data["addresse"] == "slave":
+    if "addressee" in sensor_data:
+        if sensor_data["addressee"] == "slave":
             return
 
     
@@ -127,7 +127,6 @@ def start_mqtt():
     client.publish("house/main", "Die Zentrale ist jetzt online")  
 
     while True:
-        print(f"check queue: {len(mqtt_message_queue)}")
         if len(mqtt_message_queue) != 0:
             client.publish("house/main", json.dumps(mqtt_message_queue[0]))
             mqtt_message_queue.pop(0)
@@ -186,7 +185,6 @@ def rename_sensor(auth):
 @websocket.on('set_rgb')
 def set_rgb(auth):
     data = json.loads(auth)
-    
     mqtt_message_queue.append(data)
 
 # Main initialazing
