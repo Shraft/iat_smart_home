@@ -1,11 +1,11 @@
-### Measure Temperature
+## Measure Temperature
 The goal of this example is to measure temperature and humidity with an DHT11 Sensor on a NodeMCUv3 esp board.
 requirements:
 * Arduino IDE
 * NodeMCUv3 Board
 * DHT11 Temperature/Humidity Sensor
 
-## ARDUINO IDE
+### ARDUINO IDE
 1. Install board suport package by:
   Open Arduino IDE, then File->Preferences->additional board manager urls => add the following lines
 ```
