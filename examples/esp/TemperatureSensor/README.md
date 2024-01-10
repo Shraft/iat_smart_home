@@ -13,8 +13,14 @@ http://arduino.esp8266.com/stable/package_esp8266com_index.json
 https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 ```
 2. Now got to Tools > Board > Boards Manager => search for esp8366 and install the package
-![image](https://github.com/Shraft/iat_smart_home/assets/67481239/79312e1c-da02-47aa-99a1-8adc181180df)
+<p align="center">
+  <img src="https://github.com/Shraft/iat_smart_home/assets/67481239/79312e1c-da02-47aa-99a1-8adc181180df" alt="Sublime's custom image"/>
+</p>
 3. Select Board => NodeMCU 1.0
-![image](https://github.com/Shraft/iat_smart_home/assets/67481239/2124f4e0-9951-40dc-8fb4-0dc995ef6b8c)
+<p align="center">
+  <img src="https://github.com/Shraft/iat_smart_home/assets/67481239/2124f4e0-9951-40dc-8fb4-0dc995ef6b8c" alt="Sublime's custom image"/>
+</p>
 4. Adafruit DHT sensor library installieren
-![image](https://github.com/Shraft/iat_smart_home/assets/67481239/5c9f9dbb-167f-4d51-ae9c-1897ce60641b)
+<p align="center">
+  <img src="https://github.com/Shraft/iat_smart_home/assets/67481239/5c9f9dbb-167f-4d51-ae9c-1897ce60641b" alt="Sublime's custom image"/>
+</p>
