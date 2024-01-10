@@ -4,15 +4,21 @@
 
 #### use virtualenv
 ##### installieren
+```
 apt install python3-pip
 apt install python3-virtualenv
+```
 
 ##### anlegen & activieren
+```
 virtualenv .venv
 source .venv/bin/activate
+```
 
 ##### deaktivieren
+```
 deactivate
+```
 
 ### files and directories
 
