@@ -28,8 +28,8 @@ https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32
 ### NodeMCUv3 Setup
 Connect the DHT11 with 3.3V, Ground and the data pin to Pin "D0" of the NodeMCU
 <p align="left">
-  <img src="https://preview.redd.it/kiygdnluwar81.jpg?width=500&format=pjpg&auto=webp&s=eb7f327f0d370fbcb57835b16c270bb6a19411ef" alt="Sublime's custom image"/>
-  <img src="https://github.com/Shraft/iat_smart_home/assets/67481239/fad544d6-1ef2-48bd-9fff-fdac136b8bf0" alt="Sublime's custom image"/>
+  <img src="https://preview.redd.it/kiygdnluwar81.jpg?width=500&format=pjpg&auto=webp&s=eb7f327f0d370fbcb57835b16c270bb6a19411ef" alt="Sublime's custom image" width="400"/>
+  <img src="https://github.com/Shraft/iat_smart_home/assets/67481239/fad544d6-1ef2-48bd-9fff-fdac136b8bf0" alt="Sublime's custom image" width="400"/>
 </p>
 
 
