@@ -1,0 +1,20 @@
+### Measure Temperature
+The goal of this example is to measure temperature and humidity with an DHT11 Sensor on a NodeMCUv3 esp board.
+requirements:
+* Arduino IDE
+* NodeMCUv3 Board
+* DHT11 Temperature/Humidity Sensor
+
+## ARDUINO IDE
+1. Install board suport package by:
+  Open Arduino IDE, then File->Preferences->additional board manager urls => add the following lines
+```
+http://arduino.esp8266.com/stable/package_esp8266com_index.json
+https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+```
+2. Now got to Tools > Board > Boards Manager => search for esp8366 and install the package
+![image](https://github.com/Shraft/iat_smart_home/assets/67481239/79312e1c-da02-47aa-99a1-8adc181180df)
+3. Select Board => NodeMCU 1.0
+![image](https://github.com/Shraft/iat_smart_home/assets/67481239/2124f4e0-9951-40dc-8fb4-0dc995ef6b8c)
+4. Adafruit DHT sensor library installieren
+![image](https://github.com/Shraft/iat_smart_home/assets/67481239/5c9f9dbb-167f-4d51-ae9c-1897ce60641b)
