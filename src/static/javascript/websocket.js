@@ -1,4 +1,4 @@
-const websocket = io.connect('http://localhost:8080');
+const websocket = io.connect('http://192.168.0.113:8080');
 var global_view = "overview"
 var global_details = {}
 

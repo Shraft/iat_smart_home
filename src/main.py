@@ -51,6 +51,8 @@ def mqtt_on_message_callback(client, userdata, message):
         print("Fehler beim Decodieren der Nachricht:", e)
         return
     
+    print(decoded_message)
+    
     # Wenn nicht für Zentrale
     if "addressee" in sensor_data:
         if sensor_data["addressee"] == "slave":
@@ -73,7 +75,7 @@ def mqtt_on_message_callback(client, userdata, message):
                 "name": db_sensor_existing.name,
                 "sensor_type": db_sensor_existing.sensor_type}
     if (db_sensor_existing.sensor_type == "temp" or db_sensor_existing.sensor_type =="light"):
-        local_sensor_dict["value"] = sensor_data["value"]
+        local_sensor_dict["value"] = round(sensor_data["value"],1)
     elif (db_sensor_existing.sensor_type == "rfid"):
         if sensor_data["uuid"] in global_rfid_persons:
             if global_rfid_persons[sensor_data["uuid"]]["value"] == "offline":
@@ -104,7 +106,7 @@ def mqtt_on_message_callback(client, userdata, message):
         
     new_sensor_commit = Sensor_logs(sid = current_sensor.sid,
                                     time = formatted_time, 
-                                    value = sensor_data["value"] if "value" in sensor_data != None else "empty")
+                                    value = round(sensor_data["value"],1) if "value" in sensor_data != None else "empty")
     database.add(new_sensor_commit)
     database.commit()
 
