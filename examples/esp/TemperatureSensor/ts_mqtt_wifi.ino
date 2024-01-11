@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include "DHT.h"
+#include <ArduinoJson.h> //Arduino JSON Library
 
 
 //Pins definieren (DHT11 oder DHT22)
@@ -75,6 +76,7 @@ void setup() {
 
 
 int last_read = 0;     // gibt an, wann als letzes vom TS gelesen wurde
+StaticJsonDocument<200> tempJson;  //Json um die Daten den Temperatursensors zu übermitteln 
 
 
 // loop Teil wird immer wieder ausgefuehrt
@@ -93,12 +95,19 @@ void loop() {
     }
 
     // setze die zu versendende Nachricht zusammen
-    String message = "ts1-";
-    message.concat(t);
-    message.concat("-");
-    message.concat(hi);
-    message.concat("-");
-    message.concat(h);
+    String message = "";
+    tempJson["uuid"] = "44444";
+    tempJson["type"] = "temp";
+    tempJson["operation"] = "update";
+    tempJson["value"] = t;
+    serializeJson(tempJson, message);
+
+    // String message = "ts1-";
+    // message.concat(t);
+    // message.concat("-");
+    // message.concat(hi);
+    // message.concat("-");
+    // message.concat(h);
     Serial.println(message);
 
     // forme den String in ein array of char um
