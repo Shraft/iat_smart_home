@@ -20,7 +20,7 @@ def create_diagram(sensor_history, uuid):
         Temperatur = list(sensor_history)))   
 
 
-    fig = px.line(df, x="Zeit", y="Temperatur",) 
+    fig = px.line(df, x="Zeit", y="Temperatur")#,range_y=[min(sensor_history),max(sensor_history)]) 
     path = f"src/static/charts/{uuid}.html"
     fig.write_html(path)
 

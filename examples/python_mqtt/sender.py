@@ -8,7 +8,7 @@ client = mqtt.Client("sender")
 
 client.connect(broker)
 
-client.subscribe("house/main")
+#client.subscribe("house/main")
 
 print("Sender aktiviert")
 

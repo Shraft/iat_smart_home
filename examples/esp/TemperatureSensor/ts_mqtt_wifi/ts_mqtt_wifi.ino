@@ -14,7 +14,7 @@ const char *WIFI_SSID = "smart_home_wifi";
 const char *WIFI_PASSWORD = "smarthome";
 
 //MQTT Parameter setzen
-const char *MQTT_HOST = "192.168.0.113";
+const char *MQTT_HOST = "192.168.0.112";
 const int MQTT_PORT = 1883;
 const char *MQTT_CLIENT_ID = "ESPts1";
 const char *MQTT_PASSWORD = "";
