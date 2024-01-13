@@ -62,35 +62,40 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
    - Nutzer soll in der lage sein, Steuergrößen anzugeben
 
 ## Entwurf der Demoanwendung
-![Skizze 1](./doc/1.png)
-- Schritt 1: Kommunikationspartner
-   - Sensoren und Zentrale wollen mit einander interagieren
 
+Schritt 1: Kommunikationspartner
+- Sensoren und Zentrale wollen mit einander interagieren
+ ![Skizze 1](./doc/1.png)
+---
+
+Schritt 2: Der Broker als Vermittler
+- wird als Vermittler in die Kommunikation eingebunden
+- Sender verbindet sich zum Broker und schickt (Publisht) Nachrichten in einen Kanal (bei MQTT Topic genannt)
+- Empfänger verbindet sich ebenfalls zum Broker und lauscht im gleichen Kanal (bei MQTT E. subscripted einer TOPIC)
 ![Skizze 2](./doc/2.png)
-- Schritt 2: Der Broker als Vermittler
-   - wird als Vermittler in die Kommunikation eingebunden
-   - Sender verbindet sich zum Broker und schickt (Publisht) Nachrichten in einen Kanal (bei MQTT Topic genannt)
-   - Empfänger verbindet sich ebenfalls zum Broker und lauscht im gleichen Kanal (bei MQTT E. subscripted einer TOPIC)
+---
  
+Schritt 3: Aktoren
+- Die Zentrale kann auch als Sender agieren um einem Aktor Sollwerde zukommen zu lassen
+- gleiches Prinzip nur mit umgekehrten Rollen
 ![Skizze 3](./doc/3.png)
-- Schritt 3: Aktoren
-   - Die Zentrale kann auch als Sender agieren um einem Aktor Sollwerde zukommen zu lassen
-   - gleiches Prinzip nur mit umgekehrten Rollen
+---
  
+ Schritt 4: Die Zentrale
+- besteht aus einem Webserver
+- stellt Webseite bereit
 ![Skizze 4](./doc/4.png)
-- Schritt 4: Die Zentrale
-   - besteht aus einem Webserver
-   - stellt Webseite bereit
+---
  
+Schritt 5: Datenbank
+- speichert Messwerte der Sensoren
+- Daten werden zur erstellung von Diagrammen verwendet (z.B. Temperaturverlauf)
 ![Skizze 5](./doc/5.png)
-- Schritt 5: Datenbank
-   - speichert Messwerte der Sensoren
-   - Daten werden zur erstellung von Diagrammen verwendet (z.B. Temperaturverlauf)
- 
+---
+Schritt 6: Web Socket
+- wird verbunden um das Frontend immer mit den neusten Werten zu versorgen
+- verhindert ein ständiges Neuladen der Seite
 ![Skizze 6](./doc/6.png)
-- Schritt 6: Web Socket
-   - wird verbunden um das Frontend immer mit den neusten Werten zu versorgen
-   - verhindert ein ständiges Neuladen der Seite
 
 ## Werkzeuge
 - **C++** - Verwendete Arduino Bibliotheken für den ESP8266
