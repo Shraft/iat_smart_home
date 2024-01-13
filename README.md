@@ -53,6 +53,13 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 
 ## Werkzeuge
 - Arduino Libraries
+   - DHT_Sensor_Library
+      - erleichtert das auslesen von Messwerten eines DHT11 Sensors
+      - dazu zählt Temperatur und Luftfeuchtigkeit
+   - PubSubClient
+      - ermöglicht das Empfangen und Versenden von MQTT Nachrichten
+   - ArduinoJson
+      - Variablen in JSON String verpacken
 - Python Libraries
    - PahoMQTT
       - ermöglicht in MQTT Nachrichten zu senden und zu empfangen
