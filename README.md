@@ -61,9 +61,25 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
    - Aktoren sollen Instruktionen über dieses Interface erhalten
    - Nutzer soll in der lage sein, Steuergrößen anzugeben
 
-## Entwurf
-- skizzen
-- hinführen zum endergebnis
+## Entwurf der Demoanwendung
+- Schritt 1: Kommunikationspartner
+   - Sensoren und Zentrale wollen mit einander interagieren
+- Schritt 2: Der Broker als Vermittler
+   - wird als Vermittler in die Kommunikation eingebunden
+   - Sender verbindet sich zum Broker und schickt (Publisht) Nachrichten in einen Kanal (bei MQTT Topic genannt)
+   - Empfänger verbindet sich ebenfalls zum Broker und lauscht im gleichen Kanal (bei MQTT E. subscripted einer TOPIC)
+- Schritt 3: Aktoren
+   - Die Zentrale kann auch als Sender agieren um einem Aktor Sollwerde zukommen zu lassen
+   - gleiches Prinzip nur mit umgekehrten Rollen
+- Schritt 4: Die Zentrale
+   - besteht aus einem Webserver
+   - stellt Webseite bereit
+- Schritt 5: Datenbank
+   - speichert Messwerte der Sensoren
+   - Daten werden zur erstellung von Diagrammen verwendet (z.B. Temperaturverlauf)
+- Schritt 6: Web Socket
+   - wird verbunden um das Frontend immer mit den neusten werden zu versorgen
+   - verhindert ein ständiges Neuladen der Seite
 
 ## Werkzeuge
 - **C++** - Verwendete Bibliotheken für den ESP8266
@@ -88,11 +104,13 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
       - kann aus Datenstrukturen Diagramme erstellen und als HTML Seite exportieren
 
 ## Implementierung
-- Code Schnipsel
+- Code Schnipsel?
 
 ## Diskussion der Ergebnisse - Probleme
-- Security muss erweitert werden
-- Verfügbarkeit - SPoF Broker
+- Kommunikationssicherheit
+   - für den produktiven Einsatz wäre es notwendig den Kommunikationsverkehr zu verschlüsseln
+- Single Point of Failure
+   - wenn der Broker ausfällt, ist jegliche Kommunikation unterbrochen
 
 ## Anhang
 - Docker zeug
