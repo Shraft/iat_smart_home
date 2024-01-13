@@ -23,13 +23,29 @@ Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeutung. Aus diesem Grund ist es von großem Nutzen, sich einmal genauer mit dieser Technologie zu beschäftigen.
 
 ## Anforderungen
-- QOS und Letzer Wille
+- MQTT: Quality of Service Level kurz QOS
+   - ermöglichen die Zustellparameter einzelner Nachrichten zu individualisieren
+   - 0..höchstens einmal, 1..mindestens einmal, 2..genau einmal
+- MQTT: Letzer Wille
+   - wird von MQTT sender beim Verbindungsaufbau zum Broker definiert
+   - Broker führt letzen Willen bei Verbindungsabbruch des Senders aus
+- Security
+   - alle Nachrichten werden unverschlüsselt versendet
+   - das Projekt sieht keine Sicherheitsmechanismen vor
+- Software Simmulierte Sensoren
+   - midestens 3 in Software simmulierte Sensoren
+   - Generieren Zufallswerte und versenden diese via MQTT
 - Physische Sensoren
+   - ein Sensor soll als physische Komponente realisiert werden 
 - Skalierbarkeit / Modulariät
+   - das System soll mit beliebig vielen Sensoren erweiterbar sein
 - Geringer Overhead (Pakete einfach)
+   - Die Kommunizierten Nachrichten beinhalten nur relevante Informationen
 - Visualisierbakeit / grafische Aufbereitung
+   - Die Kommuikation der Sensoren soll über eine Web Oberfläche einsehbar sein
+   - Aktoren sollen ihre Instruktionen ebenfalls über dieses Interface erhalten
 - Nutzerinteraktion
-- Security - nicht vorhanden
+   - Der Nutzer soll in der lage sein, selbst Steuergrößen anzugeben
 
 ## Entwurf
 - skizzen
