@@ -1,5 +1,4 @@
-# Belegarbeit
-Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
+# Belegarbeit - Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 
 ## Motivation MQTT
 1. **IoT-Essential:**
