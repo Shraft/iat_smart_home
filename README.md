@@ -1,7 +1,7 @@
 # Belegarbeit
 Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 
-## Motivation - Warum sollte man sich mit diesem Thema auseinandersetzen
+## Motivation MQTT
 1. **IoT-Essential:**
    - MQTT grundlegend im IoT.
    - Ermöglicht effiziente Gerätekommunikation
@@ -32,30 +32,34 @@ Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 
 Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeutung. Aus diesem Grund ist es von großem Nutzen, sich einmal genauer mit dieser Technologie zu beschäftigen.
 
-## Anforderungen
-- MQTT: Quality of Service Level kurz QOS
+## Anforderungen an die Demoanwendung
+- MQTT: verwendung von Quality of Service Leveln (QOS)
    - ermöglichen die Zustellparameter einzelner Nachrichten zu individualisieren
    - 0..höchstens einmal, 1..mindestens einmal, 2..genau einmal
-- MQTT: Letzer Wille
-   - wird von MQTT sender beim Verbindungsaufbau zum Broker definiert
+- MQTT: Konfiguration eines letzen Willens
+   - wird von MQTT-Sender beim Verbindungsaufbau zum Broker definiert
    - Broker führt letzen Willen bei Verbindungsabbruch des Senders aus
-- Security
+- Sicherheitsaspekte der Anwendung
    - alle Nachrichten werden unverschlüsselt versendet
    - das Projekt sieht keine Sicherheitsmechanismen vor
 - Software Simmulierte Sensoren
    - midestens 3 in Software simmulierte Sensoren
-   - Generieren Zufallswerte und versenden diese via MQTT
+   - generieren Zufallswerte und versenden diese via MQTT
 - Physische Sensoren
-   - ein Sensor soll als physische Komponente realisiert werden 
+   - ein Sensor soll als physische Komponente realisiert werden
+   - versenden von realen Messwerten via MQTT
 - Skalierbarkeit / Modulariät
    - das System soll mit beliebig vielen Sensoren erweiterbar sein
-- Geringer Overhead (Pakete einfach)
+- Geringer Overhead - einfache Paketstruktur
    - Die Kommunizierten Nachrichten beinhalten nur relevante Informationen
-- Visualisierbakeit / grafische Aufbereitung
-   - Die Werte der Sensoren soll über eine Web Oberfläche einsehbar sein
-   - Aktoren sollen ihre Instruktionen ebenfalls über dieses Interface erhalten
-- Nutzerinteraktion
-   - Der Nutzer soll in der lage sein, selbst Steuergrößen anzugeben
+   - Dazu zählen:
+      - **UUID** zur eindeutigen Kennung des Sensors
+      - **SensorType** als Kennung um welche Art Sensor es sich handelt
+      - **Value** der zu übermittelde Messwert
+- Visualisierbakeit / Nutzerinteraktion
+   - Die Werte der Sensoren sollen über Web Oberfläche einsehbar sein
+   - Aktoren sollen Instruktionen über dieses Interface erhalten
+   - Nutzer soll in der lage sein, Steuergrößen anzugeben
 
 ## Entwurf
 - skizzen
