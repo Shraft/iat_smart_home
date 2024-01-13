@@ -78,7 +78,7 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
    - speichert Messwerte der Sensoren
    - Daten werden zur erstellung von Diagrammen verwendet (z.B. Temperaturverlauf)
 - Schritt 6: Web Socket
-   - wird verbunden um das Frontend immer mit den neusten werden zu versorgen
+   - wird verbunden um das Frontend immer mit den neusten Werten zu versorgen
    - verhindert ein ständiges Neuladen der Seite
 
 ## Werkzeuge
