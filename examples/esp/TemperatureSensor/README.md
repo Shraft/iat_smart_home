@@ -1,6 +1,6 @@
 ## Measure Temperature
 The goal of this example is to measure temperature, humidity and heat index with an DHT11 Sensor on a NodeMCUv3 esp board.
-### requirements:
+### Requirements:
 * Arduino IDE
 * NodeMCUv3 Board
 * DHT11 Temperature/Humidity Sensor
