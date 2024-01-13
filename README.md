@@ -108,13 +108,13 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 
 ## Diskussion der Ergebnisse
 - Alle Anfordeungen erfüllt
-- Technische Demonstration, benötigt noch feinschliff
+- Technische Demonstration, Anwendung ist erweiterbar, aktueller Standpunkt setzt auf funktionalität
 Probleme
 - Kommunikationssicherheit
    - für den produktiven Einsatz wäre es notwendig den Kommunikationsverkehr zu verschlüsseln
 - Single Point of Failure
    - wenn der Broker ausfällt, ist jegliche Kommunikation unterbrochen
-- Sensoren skalierbar, docker nicht 
+- Sensoren skalierbar
 
 ## Anhang
 - Docker zeug
