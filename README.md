@@ -62,7 +62,7 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 - hinführen zum endergebnis
 
 ## Werkzeuge
-- Arduino Libraries
+- **C##** - Verwendete Bibliotheken für den ESP8266
    - DHT_Sensor_Library
       - erleichtert das auslesen von Messwerten eines DHT11 Sensors
       - dazu zählt Temperatur und Luftfeuchtigkeit
@@ -70,7 +70,7 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
       - ermöglicht das Empfangen und Versenden von MQTT Nachrichten
    - ArduinoJson
       - Variablen in JSON String verpacken
-- Python Libraries
+- **Python** - Verwendete Bibliotheken für alle Scripte
    - PahoMQTT
       - ermöglicht in MQTT Nachrichten zu senden und zu empfangen
    - SQLAlchemy
