@@ -42,7 +42,7 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 - Geringer Overhead (Pakete einfach)
    - Die Kommunizierten Nachrichten beinhalten nur relevante Informationen
 - Visualisierbakeit / grafische Aufbereitung
-   - Die Kommuikation der Sensoren soll über eine Web Oberfläche einsehbar sein
+   - Die Werte der Sensoren soll über eine Web Oberfläche einsehbar sein
    - Aktoren sollen ihre Instruktionen ebenfalls über dieses Interface erhalten
 - Nutzerinteraktion
    - Der Nutzer soll in der lage sein, selbst Steuergrößen anzugeben
