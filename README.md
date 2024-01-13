@@ -62,7 +62,7 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 - hinführen zum endergebnis
 
 ## Werkzeuge
-- **C##** - Verwendete Bibliotheken für den ESP8266
+- **C++** - Verwendete Bibliotheken für den ESP8266
    - DHT_Sensor_Library
       - erleichtert das auslesen von Messwerten eines DHT11 Sensors
       - dazu zählt Temperatur und Luftfeuchtigkeit
