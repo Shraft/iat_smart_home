@@ -81,7 +81,7 @@ Schritt 3: Aktoren
 ![Skizze 3](./doc/3.png)
 ---
  
- Schritt 4: Die Zentrale
+ Schritt 4: Die Zentrale als Webserver
 - besteht aus einem Webserver
 - stellt Webseite bereit
 ![Skizze 4](./doc/4.png)
