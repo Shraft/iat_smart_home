@@ -62,6 +62,7 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
    - Nutzer soll in der lage sein, Steuergrößen anzugeben
 
 ## Entwurf der Demoanwendung
+![Skizze 1](./doc/1.png)
 - Schritt 1: Kommunikationspartner
    - Sensoren und Zentrale wollen mit einander interagieren
 - Schritt 2: Der Broker als Vermittler
