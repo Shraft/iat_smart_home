@@ -54,6 +54,17 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 ## Werkzeuge
 - Arduino Libraries
 - Python Libraries
+   - PahoMQTT
+      - ermöglicht in MQTT Nachrichten zu senden und zu empfangen
+   - SQLAlchemy
+      - ermöglicht das senden von SQL Anfragen an eine Datenbank
+      - notwendig zum speichern und abrufen von Sensorwerten
+   - Flask
+      - Framework um Python als Webserver zu nutzen
+      - Stellt HTML Seiten bereit
+      - Dient als Kommunikationsparter für eine Websocket Verbindung mit dem Frontend
+   - Plotly
+      - kann aus Datenstrukturen Diagramme erstellen und als HTML Seite exportieren
 
 ## Implementierung
 - Code Schnipsel
