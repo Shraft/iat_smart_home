@@ -23,7 +23,7 @@ Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeutung. Aus diesem Grund ist es von großem Nutzen, sich einmal genauer mit dieser Technologie zu beschäftigen.
 
 ## Anforderungen
-- QOS
+- QOS und Letzer Wille
 - Physische Sensoren
 - Skalierbarkeit / Modulariät
 - Geringer Overhead (Pakete einfach)
@@ -32,11 +32,19 @@ Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeu
 - Security - nicht vorhanden
 
 ## Entwurf
+- skizzen
+- hinführen zum endergebnis
 
 ## Werkzeuge
+- Arduino Libraries
+- Python Libraries
 
 ## Implementierung
+- Code Schnipsel
 
-## Diskussion der Ergebnisse
+## Diskussion der Ergebnisse - Probleme
+- Security muss erweitert werden
+- Verfügbarkeit - SPoF Broker
 
 ## Anhang
+- Docker zeug
