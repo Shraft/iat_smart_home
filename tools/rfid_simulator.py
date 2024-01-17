@@ -10,7 +10,7 @@ persons = [123144141, 55216134, 88394013]
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--count", help='sensorcount', default=3)
+parser.add_argument("--count", help='sensorcount', default=1)
 args = parser.parse_args()
 arg_count = int(args.count)
 
@@ -31,8 +31,16 @@ while True:
 
 broker = "localhost"
 client = mqtt.Client("rfid_sender")
+
+# Last will implementation
+last_will_data = {"uuid": persons[0],
+                        "type": "rfid",
+                        "operation" : "last_will",
+                        "value": "error"}
+client.will_set("house/rfid", json.dumps(last_will_data), qos=2)
+
 client.connect(broker)
-client.subscribe("house/main")
+client.subscribe("house/rfid")
 print("Sender aktiviert")
 
 
@@ -42,7 +50,7 @@ while True:
     sensor_data = {"type": "rfid",
                     "operation" : "update",
                     "uuid": persons[rdm_person_index]}
-    client.publish("house/main", json.dumps(sensor_data))
+    client.publish("house/rfid", json.dumps(sensor_data), qos=1)
     print(sensor_data)
 
     time.sleep(5)

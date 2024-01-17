@@ -9,7 +9,7 @@ sensor_count = 0
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--count", help='sensorcount', default=3)
+parser.add_argument("--count", help='sensorcount', default=1)
 args = parser.parse_args()
 arg_count = int(args.count)
 
@@ -63,10 +63,18 @@ while True:
 
 broker = "localhost"
 client = mqtt.Client("light_sender")
-client.on_message = mqtt_on_message_callback      
+client.on_message = mqtt_on_message_callback  
+
+# Last will implementation
+last_will_data = {"uuid": uuid_list[0],
+                        "type": "light",
+                        "operation" : "last_will",
+                        "value": "error"}
+client.will_set("house/light", json.dumps(last_will_data), qos=2)   
+
 client.connect(broker)
 client.loop_start()    
-client.subscribe("house/main")
+client.subscribe("house/light")
 print("Sender aktiviert")
 
 
@@ -80,7 +88,7 @@ while True:
                         "type": "light",
                         "operation" : "update",
                         "value": basic_light}
-        client.publish("house/main", json.dumps(sensor_data))
+        client.publish("house/light", json.dumps(sensor_data), qos=1)
         print(sensor_data)
 
     time.sleep(5)

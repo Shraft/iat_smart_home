@@ -74,11 +74,19 @@ def mqtt_on_message_callback(client, userdata, message):
     local_sensor_dict = {"uuid": sensor_data["uuid"],
                 "name": db_sensor_existing.name,
                 "sensor_type": db_sensor_existing.sensor_type}
+    # for temp and light
     if (db_sensor_existing.sensor_type == "temp" or db_sensor_existing.sensor_type =="light"):
-        local_sensor_dict["value"] = round(sensor_data["value"],1)
+        if sensor_data["value"] != "error":
+            local_sensor_dict["value"] = round(sensor_data["value"],1)
+        else:
+            local_sensor_dict["value"] = sensor_data["value"]
+
+    # for rfid
     elif (db_sensor_existing.sensor_type == "rfid"):
         if sensor_data["uuid"] in global_rfid_persons:
-            if global_rfid_persons[sensor_data["uuid"]]["value"] == "offline":
+            if (sensor_data["operation"] == "last_will"):
+                local_sensor_dict["value"] = "error"
+            elif global_rfid_persons[sensor_data["uuid"]]["value"] == "offline":
                 local_sensor_dict["value"] = "online"
             else:
                 local_sensor_dict["value"] = "offline"
@@ -96,6 +104,9 @@ def mqtt_on_message_callback(client, userdata, message):
 
 
     # Write Logs if Necessary
+    if (sensor_data["operation"] == "last_will") and (sensor_data["value"] == "error"):
+        return
+
     current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
     now = datetime.datetime.now()
     formatted_time = now.strftime("%d %H %M")
@@ -110,14 +121,20 @@ def mqtt_on_message_callback(client, userdata, message):
     database.add(new_sensor_commit)
     database.commit()
 
+def on_disconnect(client, userdata, rc):
+   print("verbindung verloren")
+
+
+
 def start_mqtt():
     # start mqtt
     broker_address = "localhost"       
     client = mqtt.Client("master")         
-    client.on_message = mqtt_on_message_callback         
+    client.on_message = mqtt_on_message_callback   
+    client.on_disconnect = on_disconnect      
     client.connect(broker_address)          
     client.loop_start()                                                      
-    client.subscribe("house/main")         
+    client.subscribe("house/#")         
     client.publish("house/main", "Die Zentrale ist jetzt online")  
 
     while True:
