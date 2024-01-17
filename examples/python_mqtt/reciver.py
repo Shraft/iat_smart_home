@@ -16,7 +16,7 @@ client.loop_start()
 
 print("Empfänger aktiviert")
 
-time.sleep(60)
+time.sleep(600)
 
 client.loop_stop()
 client.disconnect()

@@ -53,4 +53,4 @@ while True:
     client.publish("house/rfid", json.dumps(sensor_data), qos=1)
     print(sensor_data)
 
-    time.sleep(5)
+    time.sleep(8)

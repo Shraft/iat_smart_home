@@ -59,7 +59,7 @@ while True:
                     "type": "temp",
                     "operation" : "update",
                     "value": basic_temp}
-    client.publish("house/temp", json.dumps(sensor_data), qos=1)
-    print(sensor_data)
+    msg = client.publish("house/temp", json.dumps(sensor_data), qos=1)
+    print(msg)
 
     time.sleep(5)

@@ -133,15 +133,16 @@ def start_mqtt():
     client.on_message = mqtt_on_message_callback   
     client.on_disconnect = on_disconnect      
     client.connect(broker_address)          
-    client.loop_start()                                                      
+    #client.loop_start()                                                      
     client.subscribe("house/#")         
     client.publish("house/main", "Die Zentrale ist jetzt online")  
 
     while True:
+        client.loop()
         if len(mqtt_message_queue) != 0:
             client.publish("house/main", json.dumps(mqtt_message_queue[0]))
             mqtt_message_queue.pop(0)
-        time.sleep(1)
+        #time.sleep(1)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
