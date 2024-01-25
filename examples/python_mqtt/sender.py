@@ -6,13 +6,14 @@ broker = "localhost"
 
 client = mqtt.Client("sender")
 
+client.will_set("house/main", "Verbindung zum Sender unterbrochen", 2)
+
 client.connect(broker)
 
-#client.subscribe("house/main")
 
 print("Sender aktiviert")
 
 while True:
-    client.publish("house/main", "Sensor 1 ist online")
+    client.publish("house/main", "Sensor 1: Daten ...", qos=1)
     print("Nachricht wurde gesendet")
-    time.sleep(3)
+    time.sleep(2)

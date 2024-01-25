@@ -8,7 +8,7 @@ uuid_list = [44444,55555,66666,77777,88888]
 sensor_count = 0
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--count", help='sensorcount', default=3)
+parser.add_argument("--count", help='sensorcount', default=1)
 args = parser.parse_args()
 arg_count = int(args.count)
 
@@ -26,10 +26,25 @@ while True:
     if (sensor_count > 0) and (sensor_count <=5):
         break
 
+
+def on_disconnect(client, userdata, rc):
+   print("verbindung verloren")
+
+
+
 broker = "localhost"
 client = mqtt.Client("temp_sender")
+client.on_disconnect = on_disconnect
+
+# Last will implementation
+last_will_data = {"uuid": uuid_list[0],
+                        "type": "temp",
+                        "operation" : "last_will",
+                        "value": "error"}
+client.will_set("house/temp", json.dumps(last_will_data), qos=2)
+
 client.connect(broker)
-client.subscribe("house/main")
+client.subscribe("house/temp")
 print("Sender aktiviert")
 
 
@@ -44,7 +59,7 @@ while True:
                     "type": "temp",
                     "operation" : "update",
                     "value": basic_temp}
-    client.publish("house/main", json.dumps(sensor_data))
-    print(sensor_data)
+    msg = client.publish("house/temp", json.dumps(sensor_data), qos=1)
+    print(msg)
 
-    time.sleep(1)
+    time.sleep(5)

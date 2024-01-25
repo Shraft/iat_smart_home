@@ -11,12 +11,12 @@ client = mqtt.Client("receiver")
 client.connect(broker)
 client.on_message = on_message
 
-client.subscribe("house/main")
+client.subscribe("house/#")
 client.loop_start()
 
 print("Empfänger aktiviert")
 
-time.sleep(60)
+time.sleep(600)
 
 client.loop_stop()
 client.disconnect()
