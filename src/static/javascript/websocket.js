@@ -220,7 +220,7 @@ websocket.on('rfid_data', function(data) {
         var tr_sensor = document.createElement("tr") 
         tr_sensor.id = "person_" + sensor_list[sensor_object]["value"]
         var bild = document.createElement("td")
-        bild.innerHTML = "<img src='../static/persons/" + sensor_list[sensor_object]["uuid"] + ".jpeg' class='person_img'>"
+        bild.innerHTML = "<img src='../static/img/nutzer.png' class='person_img'>"
         var name = document.createElement("td")
         name.innerHTML = sensor_list[sensor_object]["name"]
         var value = document.createElement("td")

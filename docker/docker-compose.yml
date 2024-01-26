@@ -12,7 +12,6 @@ services:
       ports:
          - 9876:5432
       
-
    mosquitto:
       image: eclipse-mosquitto:2
       ports:
@@ -21,23 +20,16 @@ services:
          - 9001:9001
       volumes:
          - ./mosquitto/config:/mosquitto/config
-#         - ./mosquitto/data:/mosquitto/data
-
 
    flask:
       build:
          context: ..
          dockerfile: ./docker/flask_service
       image: flask_service
-      # depends_on:
-      #    database:
-      #       condition: service_started
-      # links:
-      #    - database
       restart: always
       container_name: flask_container
-#       volumes:
-#          - ~/res:/python-docker/src/main/static/res 
+      volumes:
+         - ~/res:/python-docker/src/main/static/res 
       ports:
          - 8080:8080
       network_mode: "host"
