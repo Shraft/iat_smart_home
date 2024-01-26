@@ -273,6 +273,7 @@ websocket.on('sensors', function(data) {
         var type = document.createElement("td")
         type.innerHTML = sensor_list[sensor_object]["type"]
 
+        // rename
         let img = document.createElement("td")
         let rename_img = Object.assign(new Image(), {
             src: "../static/img/bleistift.png",
@@ -283,7 +284,20 @@ websocket.on('sensors', function(data) {
 
         tr_sensor.id = "renaming_" + sensor_list[sensor_object]["type"]
 
-        tr_sensor.append(uuid, type, name, img)
+        // delete
+        let delimg = document.createElement("td")
+        let delete_img = Object.assign(new Image(), {
+            src: "../static/img/loschen.png",
+            className: "sensor_actions",
+            onclick: function() {delete_sensor(sensor_list[sensor_object].uuid, sensor_list[sensor_object].name);}
+          });
+          delimg.appendChild(delete_img)
+
+        tr_sensor.id = "deleting_" + sensor_list[sensor_object]["type"]
+        //
+
+
+        tr_sensor.append(uuid, type, name, img, delimg)
         table.appendChild(tr_sensor)
     }
 

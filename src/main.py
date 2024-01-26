@@ -175,7 +175,7 @@ def get_sensors(auth):
                                       "uuid": sensor.uuid,
                                       "name": sensor.name}
     
-    print(f"WS: emit sensors {response_dict}")
+    # print(f"WS: emit sensors {response_dict}")
 
     websocket.emit("sensors", json.dumps(response_dict))
 
@@ -194,6 +194,23 @@ def rename_sensor(auth):
         global_rfid_persons[data["uuid"]]["name"] = data["new_name"]
     if data["uuid"] in global_temp_sensors:
         global_temp_sensors[data["uuid"]]["name"] = data["new_name"] 
+
+@websocket.on("delete_sensor")
+def delete_sensor(auth):
+    data = json.loads(auth)
+    
+    db_sensor = database.query(Sensors).filter(Sensors.uuid == data["uuid"]).first()
+    if db_sensor is not None:
+        database.delete(db_sensor)
+        database.commit()
+        print(f"sensor entfernen: {data['uuid']}")
+
+    if data["uuid"] in global_light_sensors:
+        global_light_sensors.pop(data["uuid"]) 
+    if data["uuid"] in global_rfid_persons:
+        global_rfid_persons.pop(data["uuid"]) 
+    if data["uuid"] in global_temp_sensors:
+        global_temp_sensors.pop(data["uuid"]) 
 
 
 @websocket.on('set_rgb')
