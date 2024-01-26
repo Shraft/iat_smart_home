@@ -20,7 +20,7 @@ def create_diagram(sensor_history, uuid):
         Temperatur = list(sensor_history)))   
 
 
-    fig = px.line(df, x="Zeit", y=["Temperatur"])#,range_y=[min(sensor_history),max(sensor_history)]) 
+    fig = px.line(df, x="Zeit", y="Temperatur")#,range_y=[min(sensor_history),max(sensor_history)]) 
     #fig.update_xaxes(range=[1.5, 4.5])
     #fig.update_yaxes(insiderange=[-5, 35])
     path = f"src/static/charts/{uuid}.html"
@@ -53,7 +53,7 @@ def create_diagrams(database):
 
         #websocket.emit("temp_sensor_history", json.dumps(temp_sensors_value_history))
         for sensor in temp_sensors_value_history:
-            k = 20
+            k = 60
             while len(temp_sensors_value_history[sensor]) > k:
                 temp_sensors_value_history[sensor].pop(0)
             #print(f"DIAGRAMS: create Diagram for {sensor}")

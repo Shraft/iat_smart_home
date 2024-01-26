@@ -109,7 +109,7 @@ def mqtt_on_message_callback(client, userdata, message):
 
     current_sensor = database.query(Sensors).filter(Sensors.uuid == sensor_data["uuid"]).first()
     now = datetime.datetime.now()
-    formatted_time = now.strftime("%d %H %M")
+    formatted_time = now.strftime("%d %H %M %S")
     last_sensor_logs = database.query(Sensor_logs).filter(Sensor_logs.sid == current_sensor.sid).all()
     for sensor_object in last_sensor_logs:
         if sensor_object.time == formatted_time:

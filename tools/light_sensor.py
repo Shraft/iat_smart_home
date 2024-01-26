@@ -2,16 +2,9 @@ import time
 import paho.mqtt.client as mqtt
 import json
 import random
-import argparse
 
-uuid_list = [21344,573215,623456]
+uuid = random.randint(100000, 999999)
 sensor_count = 0
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--count", help='sensorcount', default=1)
-args = parser.parse_args()
-arg_count = int(args.count)
 
 
 def print_rgb_color(r, g, b, text):
@@ -39,56 +32,50 @@ def mqtt_on_message_callback(client, userdata, message):
     except json.JSONDecodeError as e:
         print("Fehler beim Decodieren der Nachricht:", e)
         return
+    print(data)
     
     if "addressee" in data:
         if data["addressee"] == "slave":
-            if data["uuid"] in uuid_list:
+            if data["uuid"] == uuid:
                 print_rgb_color(data["r"],data["g"], data["b"], f"Sensor-{data['uuid']}")
     
 
+counter = 0
+send_delay = 2
+recon_time = 30
 while True:
-    if arg_count > 0 and arg_count <=3:
-        sensor_count = arg_count
-        break
-    
-    eingabe = input("Anzahl Sensoren? [1-3]: ")
+    counter += 1
 
-    try:
-        sensor_count = int(eingabe)  # Du kannst auch int() verwenden, um eine Ganzzahl zu erhalten, wenn gewünscht
-    except ValueError:
-        print("Invalid Input, repeat")
-        continue
-    if (sensor_count > 0) and (sensor_count <=3):
-        break
+    if counter == 1:
+        broker = "localhost"
+        client = mqtt.Client(f"light_sender-{uuid}")
 
-broker = "localhost"
-client = mqtt.Client("light_sender")
-client.on_message = mqtt_on_message_callback  
-
-# Last will implementation
-last_will_data = {"uuid": uuid_list[0],
+        # Last will implementation
+        last_will_data = {"uuid": uuid,
                         "type": "light",
                         "operation" : "last_will",
                         "value": "error"}
-client.will_set("house/light", json.dumps(last_will_data), qos=2)   
+        client.will_set("house/light", json.dumps(last_will_data), qos=2)   
 
-client.connect(broker)
-client.loop_start()    
-client.subscribe("house/light")
-print("Sender aktiviert")
+        client.on_message = mqtt_on_message_callback  
+        client.connect(broker)
+        client.loop_start()   
+        client.subscribe("house/#")
+        print(f"Sender aktiviert mit UUID {uuid}")
+    elif counter == int(recon_time/send_delay):
+        client.disconnect()
+        print("disconnect")
+        counter = 0
+        continue
 
 
-basic_light = 10
+    basic_light = random.randint(1, 100)
 
-while True:
-    for sensor_index in range (0, sensor_count):
-        basic_light = random.randint(1, 100)
+    sensor_data = {"uuid": uuid,
+                    "type": "light",
+                    "operation" : "update",
+                    "value": basic_light}
+    client.publish("house/light", json.dumps(sensor_data), qos=1)
+    #print(sensor_data)
 
-        sensor_data = {"uuid": uuid_list[sensor_index],
-                        "type": "light",
-                        "operation" : "update",
-                        "value": basic_light}
-        client.publish("house/light", json.dumps(sensor_data), qos=1)
-        print(sensor_data)
-
-    time.sleep(5)
+    time.sleep(send_delay)

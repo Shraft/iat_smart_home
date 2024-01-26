@@ -6,51 +6,39 @@ import argparse
 
 persons_count = 0
 
-persons = [123144141, 55216134, 88394013]
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--count", help='sensorcount', default=1)
-args = parser.parse_args()
-arg_count = int(args.count)
-
-while True:
-    if arg_count > 0 and arg_count <=3:
-        persons_count = arg_count
-        break
-
-    eingabe = input("Anzahl Personen? [1-3]: ")
-
-    try:
-        persons_count = int(eingabe)  # Du kannst auch int() verwenden, um eine Ganzzahl zu erhalten, wenn gewünscht
-    except ValueError:
-        print("Invalid Input, repeat")
-        continue
-    if (persons_count > 0) and (persons_count <=3):
-        break
+person = random.randint(100000, 999999)
 
 broker = "localhost"
-client = mqtt.Client("rfid_sender")
+client = mqtt.Client(f"rfid_sender-{person}")
 
 # Last will implementation
-last_will_data = {"uuid": persons[0],
+last_will_data = {"uuid": person,
                         "type": "rfid",
                         "operation" : "last_will",
                         "value": "error"}
 client.will_set("house/rfid", json.dumps(last_will_data), qos=2)
 
-client.connect(broker)
-client.subscribe("house/rfid")
-print("Sender aktiviert")
-
-
+# foreverloop
+counter = 0
+send_delay = 10
+recon_time = 30
 while True:
-    rdm_person_index = random.randint(0, persons_count-1)
+    counter += 1
+
+    if counter == 1:
+        client.connect(broker)
+        client.subscribe("house/rfid")
+        print(f"Sender aktiviert mit UUID {person}")
+    elif counter == int(recon_time/send_delay):
+        client.disconnect()
+        print("disconnect")
+        counter = 0
+        continue
 
     sensor_data = {"type": "rfid",
                     "operation" : "update",
-                    "uuid": persons[rdm_person_index]}
+                    "uuid": person}
     client.publish("house/rfid", json.dumps(sensor_data), qos=1)
     print(sensor_data)
 
-    time.sleep(8)
+    time.sleep(send_delay)
