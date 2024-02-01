@@ -1,7 +1,7 @@
 # Belegarbeit - Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 
 ## Motivation MQTT
-Mit der Industrie 4.0 und dem Internet der Dinge steigt der Grad der Vernetzung stetig an. Eines der gängigen Kommunikationsprotokolle im industriellen Umfeld ist OPC UA, welches vom Umfang her sehr mächtig ist und features, wie Adressraum, Alarm und Event management, Zugriffskontrolle etc. anbietet. Dieser Umfang macht OPC UA sehr flexibel, impliziert aber auch einen größeren Overhead als zum Beispiel MQTT. So kommt es das MQTT in einem Szenario, wo nur der Datenaustausch über Publish/Subscribe mit sehr vielen Teilnehmern betrachtet wird, um einiges schneller ist als OPC UA [3]. Größter Vorteil von MQTT ist dabei das Senden einer Nachricht an mehrere Clients. [3] Somit ist MQTT auch für Automatisierer relevant und Ziel dieser Arbeit ist es ein Lehrbeispiel zu entwickeln, welches die Eigenschaften von MQTT aufzeigt.
+Mit der Industrie 4.0 und dem Internet der Dinge steigt der Grad der Vernetzung stetig an. Eines der gängigen Kommunikationsprotokolle im industriellen Umfeld ist OPC UA, welches vom Umfang her sehr mächtig ist und features, wie Adressraum, Alarm und Event management, Zugriffskontrolle etc. anbietet. Dieser Umfang macht OPC UA sehr flexibel, impliziert aber auch einen größeren Overhead als zum Beispiel MQTT. So kommt es das MQTT in einem Szenario, wo nur der Datenaustausch über Publish/Subscribe mit sehr vielen Teilnehmern betrachtet wird, um einiges schneller ist als OPC UA. Größter Vorteil von MQTT ist dabei das Senden einer Nachricht an mehrere Clients.  Somit ist MQTT auch für Automatisierer relevant und Ziel dieser Arbeit ist es ein Lehrbeispiel zu entwickeln, welches die Eigenschaften von MQTT aufzeigt.
 
 ## Anforderungen an die Demoanwendung
 - MQTT: verwendung von Quality of Service Leveln (QOS)
@@ -36,37 +36,37 @@ Mit der Industrie 4.0 und dem Internet der Dinge steigt der Grad der Vernetzung 
 
 Schritt 1: Kommunikationspartner
 - Sensoren und Zentrale wollen mit einander interagieren
- ![Skizze 1](./doc/1.png)
+ ![Skizze 1](./dok/1.png)
 ---
 
 Schritt 2: Der Broker als Vermittler
 - wird als Vermittler in die Kommunikation eingebunden
 - Sender verbindet sich zum Broker und schickt (Publisht) Nachrichten in einen Kanal (bei MQTT Topic genannt)
 - Empfänger verbindet sich ebenfalls zum Broker und lauscht im gleichen Kanal (bei MQTT E. subscripted einer TOPIC)
-![Skizze 2](./doc/2.png)
+![Skizze 2](./dok/2.png)
 ---
  
 Schritt 3: Aktoren
 - Die Zentrale kann auch als Sender agieren um einem Aktor Sollwerde zukommen zu lassen
 - gleiches Prinzip nur mit umgekehrten Rollen
-![Skizze 3](./doc/3.png)
+![Skizze 3](./dok/3.png)
 ---
  
  Schritt 4: Die Zentrale als Webserver
 - besteht aus einem Webserver
 - stellt Webseite bereit
-![Skizze 4](./doc/4.png)
+![Skizze 4](./dok/4.png)
 ---
  
 Schritt 5: Datenbank
 - speichert Messwerte der Sensoren
 - Daten werden zur erstellung von Diagrammen verwendet (z.B. Temperaturverlauf)
-![Skizze 5](./doc/5.png)
+![Skizze 5](./dok/5.png)
 ---
 Schritt 6: Web Socket
 - wird verbunden um das Frontend immer mit den neusten Werten zu versorgen
 - verhindert ein ständiges Neuladen der Seite
-![Skizze 6](./doc/6.png)
+![Skizze 6](./dok/6.png)
 
 ## Werkzeuge
 - **C++** - Verwendete Arduino Bibliotheken für den ESP8266
