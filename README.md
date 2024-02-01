@@ -1,35 +1,7 @@
 # Belegarbeit - Entwicklung einer Demoanwendung für die Lehre unter verwendung von MQTT
 
 ## Motivation MQTT
-1. **IoT-Essential:**
-   - MQTT grundlegend im IoT.
-   - Ermöglicht effiziente Gerätekommunikation
-   - Einblick in die Welt der IoT-Technologien
-
-2. **Effiziente Datenübertragung:**
-   - Geringer Overhead für effiziente Übertragung
-   - Wichtig bei begrenzten Ressourcen, Bandbreite
-
-3. **Skalierbarkeit für Projekte aller Größen:**
-   - Skalierbar für kleine bis große Projekte
-   - Flexibilität für diverse Projekte
-
-4. **Einfache Implementierung:**
-   - Einfache Implementierung, erleichtert Einstieg
-   - Zahlreiche Bibliotheken für verschiedene Sprachen
-   - Schnelle Prototypenentwicklung
-
-5. **Vielseitige Anwendungsbereiche:**
-   - Nicht nur auf IoT beschränkt
-   - Anwendbar in Echtzeit-Messaging, Home Automation, Logistik
-   - Vielseitigkeit als wertvolle Fähigkeit
-
-6. **Zuverlässige Kommunikation:**
-   - Anpassbarer QoS-Level für Zuverlässigkeit
-   - Funktioniert gut in instabilen Netzwerken
-   - Entscheidend für zuverlässige Datenübertragung
-
-Aufgrund der genannten Eigenschaft gewinnt das MQTT-Protokoll zunehmend an Bedeutung. Aus diesem Grund ist es von großem Nutzen, sich einmal genauer mit dieser Technologie zu beschäftigen.
+Mit der Industrie 4.0 und dem Internet der Dinge steigt der Grad der Vernetzung stetig an. Eines der gängigen Kommunikationsprotokolle im industriellen Umfeld ist OPC UA, welches vom Umfang her sehr mächtig ist und features, wie Adressraum, Alarm und Event management, Zugriffskontrolle etc. anbietet. Dieser Umfang macht OPC UA sehr flexibel, impliziert aber auch einen größeren Overhead als zum Beispiel MQTT. So kommt es das MQTT in einem Szenario, wo nur der Datenaustausch über Publish/Subscribe mit sehr vielen Teilnehmern betrachtet wird, um einiges schneller ist als OPC UA [3]. Größter Vorteil von MQTT ist dabei das Senden einer Nachricht an mehrere Clients. [3] Somit ist MQTT auch für Automatisierer relevant und Ziel dieser Arbeit ist es ein Lehrbeispiel zu entwickeln, welches die Eigenschaften von MQTT aufzeigt.
 
 ## Anforderungen an die Demoanwendung
 - MQTT: verwendung von Quality of Service Leveln (QOS)
@@ -117,19 +89,3 @@ Schritt 6: Web Socket
       - Dient als Kommunikationsparter für eine Websocket Verbindung mit dem Frontend
    - Plotly
       - kann aus Datenstrukturen Diagramme erstellen und als HTML Seite exportieren
-
-## Implementierung
-- Code Schnipsel?
-
-## Diskussion der Ergebnisse
-- Alle Anfordeungen erfüllt
-- Technische Demonstration, Anwendung ist erweiterbar, aktueller Standpunkt setzt auf funktionalität
-Probleme
-- Kommunikationssicherheit
-   - für den produktiven Einsatz wäre es notwendig den Kommunikationsverkehr zu verschlüsseln
-- Single Point of Failure
-   - wenn der Broker ausfällt, ist jegliche Kommunikation unterbrochen
-- Sensoren skalierbar
-
-## Anhang
-- Docker zeug
