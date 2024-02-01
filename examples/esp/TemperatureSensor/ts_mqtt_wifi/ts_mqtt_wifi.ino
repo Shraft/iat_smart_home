@@ -1,160 +1,102 @@
-#include <ESP8266WiFi.h>
-#include <Arduino.h>
-#include <PubSubClient.h>
-#include "DHT.h"
+#include "DHT.h" // Temperature Sensor Library
+#include <ESP8266WiFi.h>  //Library for interacting with the ESP Board
+#include <PubSubClient.h> // MQTT Library
 #include <ArduinoJson.h> //Arduino JSON Library
-#include <iostream>
 
-//DHT sensor benutzen
-#define DHT_PIN D2
-#define DHT_TYPE DHT11 //Pins definieren (DHT11 oder DHT22)
-#define DHT_GET_TEMP
-#define SUBSCRIBE_LED
-#define PIN_LED_R D5
-#define PIN_LED_G D6
-#define PIN_LED_B D7
-#define TOPIC_LED "house/light"
-// #define DHT_GET_HUMIDITY
-// #define DHT_GET_HEAT_INDEX
+/***
+  This Programm connects via MQTT-TCP to a broker and transmits optionally temperature/ humidity / heat index
+  The functionality can be configured by commenting the defines accordingly
+  This application is intendet to work with a DHT 11 or 22 Temperature Sensor and a Nodemcu V1 board, that features an esp8266 wlan microcontroller.
+  For simplicity the sensor/actors are split into different applications.
+***/
+
+/*** Functionality Configuration ***/
 #define LAST_WILL
+#define DHT_GET_TEMP  //DHT sensor benutzen
+  // #define DHT_GET_HUMIDITY
+  // #define DHT_GET_HEAT_INDEX
 
-#define SENSOR_UUID 44444
+/*** Configure DHT ***/
+#define DHT_PIN D2  // Pin where the used DHT signal pin is
+#define DHT_TYPE DHT11 //Define DHT model (DHT11 oder DHT22)
+#define DHT_READ_INTERVALL_MS 2000
 
-//Wlan Name und Password Setzen
-const char *WIFI_SSID = "smart_home_wifi";
-const char *WIFI_PASSWORD = "smarthome";
+/*** Miscelaneous Configuration ***/
+#define SENSOR_UUID 44444 //Unique Identifier
 
-//MQTT Parameter setzen
-const char *MQTT_HOST = "192.168.0.112";
+/*** Set WLAN Name and Password ***/
+const char *WIFI_SSID = "Axayacatl";//"smart_home_wifi";
+const char *WIFI_PASSWORD = "47597001200484786023";//"smarthome";
+
+/*** set MQTT Parameter ***/
+const char *MQTT_HOST = "192.168.178.40";//"192.168.0.112";
 const int MQTT_PORT = 1883;
 const char *MQTT_CLIENT_ID = "ESPts1";
 const char *MQTT_PASSWORD = "";
 const char *MQTT_USER = "ESPts1";
 const char *TOPIC = "house/main";
 
-//Wifi, MQTT & DHT instanzieren
+/** instanciate Wifi, MQTT & DHT **/
 WiFiClient client;
 PubSubClient mqttClient(client);
 DHT dht(DHT_PIN, DHT_TYPE);
 
-int last_read = 0;     // gibt an, wann als letzes vom TS gelesen wurde
-StaticJsonDocument<200> tempJson;  //Json um die Daten den Temperatursensors zu übermitteln (200Byte ram reserviert)
+int last_read = 0;     // time from last read from dht
+StaticJsonDocument<200> tempJson;  //reserve 200 Byte for the JSON
 
 
-// die connect funktion baut die Wlan und MQTT Verbindung auf
+/*** Establishes WLAN and MQTT connection ***/
 void connect() {
-  // Schleife endet erst, wenn wifi verbunden
+  // loop until WLAN connected
   while (!client.connected()){
 
-    // versuche mqtt Verbindungsaufbau
+    // try mqtt connection
     Serial.println("Versuche MQTT Verbindungsaufbau!");
     if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD)) {
       Serial.println("MQTT verbunden!");
-      //mqttClient.subscribe(TOPIC,1);  // wenn verbunden, subscripe Topic
-      #if defined(SUBSCRIBE_LED)
-        mqttClient.subscribe(TOPIC_LED,1);
-      #endif
     } else {
       Serial.println("MQTT fehlgeschlagen, versuche es erneut!");    
-      delay(5000);
+      delay(5000); // retry in 5 seconds
     }
   }
 }
 
-void callback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
-  String messageTemp;
-  
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
-  }
-  Serial.println();
 
-  // Feel free to add more if statements to control more GPIOs with MQTT
-
-  // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
-  // Changes the output state according to the message
-  #if defined(SUBSCRIBE_LED)
-    if (String(topic) == TOPIC_LED) {
-      Serial.print("Changing led color ");
-      //convert byte array to char array
-      using byte = unsigned char;
-      // Allocate a char array with one extra space for the null terminator
-      char json[length + 1];
-      // Copy bytes from message to json
-      for (unsigned int i = 0; i < length; ++i) {
-          json[i] = static_cast<char>(message[i]);
-      }
-      // Null-terminate the char array
-      json[length] = '\0';
-      //extract json data
-      JsonDocument doc_sub;
-      deserializeJson(doc_sub, json);
-      //check if data is for this device
-      if (doc_sub["uuid"] == SENSOR_UUID){
-        Serial.println("Received RGV Values for this unit");
-        int R = doc_sub["r"];
-        int G = doc_sub["g"];
-        int B = doc_sub["b"];
-        if (R > 255) R = 255;
-        if (G > 255) G = 255;
-        if (B > 255) B = 255; 
-        analogWrite(PIN_LED_R, R);
-        analogWrite(PIN_LED_G, G);
-        analogWrite(PIN_LED_B, B);
-      }else{
-        Serial.println("RGV Values not for this unit");
-      }
-    }
-  #endif
-}
-
+/*** Helper function for publishing data ***/
 void sendMessage(String message){
-  // forme den String in ein array of char um
-      int n = message.length();
-      char char_array[n + 1];
-      message.toCharArray(char_array, n+1);
+  // string to char array
+  char char_array[message.length() + 1];
+  message.toCharArray(char_array, message.length()+1);
 
-      // wenn Verbindung abgebrochen, baue eine neue auf
-      if (!client.connected()){
-        connect();
-        }
-      mqttClient.publish(TOPIC, char_array);  // versende die Nachricht mit MQTT
+  // when connection is lost, create connection
+  if (!client.connected()) connect();
+  mqttClient.publish(TOPIC, char_array);  // send message
 }
 
 
-// Setup vornehmen
+/*** initialize controller ***/
 void setup() {
-  //serielle Verbindung starten
-  Serial.begin(115200);
+  Serial.begin(115200); // create serial connection for debugging / status information
 
-  // starte wifi Verbindung
+  /** create and configure wifi connection***/
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Verbindungsaufbau zum Wifi ");
   while (WiFi.status() != WL_CONNECTED){
     delay(500);
     Serial.print(".");
   }
+  Serial.print("Assigned IP adress is: ");
   Serial.println(WiFi.localIP());
 
-  // einstellungen für automatischen wifi reconnect
+  // setting for automatic wifi reconnect
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
-  //set callback for subscibed topics
-mqttClient.setCallback(callback);
-  #if defined(SUBSCRIBE_LED)
-    pinMode(PIN_LED_R, OUTPUT);
-    pinMode(PIN_LED_G, OUTPUT);
-    pinMode(PIN_LED_B, OUTPUT);
-  #endif
 
-  // initialisiere MQTT
+  // initialize MQTT
   mqttClient.setServer(MQTT_HOST,MQTT_PORT);
-  connect();
-  //last will
+  connect(); //establish connection
+  
+  /*** If LAST_WILL ist defined, then the last will message is send to the broker***/
   #if defined(LAST_WILL)
     String message = "";
     tempJson["uuid"] = SENSOR_UUID;
@@ -166,31 +108,31 @@ mqttClient.setCallback(callback);
     sendMessage(message);
   #endif
 
-  // initialisiere DHT
+  // iinitialize DHT
   #if defined(DHT_GET_TEMP) || defined(DHT_GET_HUMIDITY) || defined(DHT_GET_HEAT_INDEX)
     dht.begin();
   #endif
 }
 
 
-// loop Teil wird immer wieder ausgefuehrt
+/*** main loop ***/
 void loop() {
-
+  /*** when data from the dht sensor is needed ***/
   #if defined(DHT_GET_TEMP) || defined(DHT_GET_HUMIDITY) || defined(DHT_GET_HEAT_INDEX)
-    // wenn die letzte Sensorauswertung länger als 2 Sekunden her ist, lese erneut
-    if (last_read > 2000){
-      float h = dht.readHumidity();                       // Luftfeuchtigkeit
-      float t = dht.readTemperature();                    // Temperatur
-      float hi = dht.computeHeatIndex(t, h, false);       // Hitzeindex
+    // if last read from sensor is older than 2 seconds, then read again
+    if (last_read > DHT_READ_INTERVALL_MS){
+      float h = dht.readHumidity();                       // Humidity
+      float t = dht.readTemperature();                    // Temperature
+      float hi = dht.computeHeatIndex(t, h, false);       // Heatindex
 
-      // pruefe ob Daten fehlerhaft sind
+      // check for faulty data
       if (isnan(h) || isnan(t)){
         Serial.println("Lesefehler vom Sensor");
         last_read = 0;
         return;
       }
 
-      // setze die zu versendende Temperatur Nachricht zusammen
+      // publish temperature data
       # ifdef DHT_GET_TEMP
         String message = "";
         tempJson["uuid"] = SENSOR_UUID;
@@ -201,7 +143,7 @@ void loop() {
         Serial.println(message);
         sendMessage(message);
       #endif
-      // sende feuchtigkeit
+      // publish humidity data
       # ifdef DHT_GET_HUMIDITY
         String message = "";
         tempJson["uuid"] = SENSOR_UUID;
@@ -212,7 +154,7 @@ void loop() {
         Serial.println(message);
         sendMessage(message);
       #endif
-      //sende heat index
+      //publish heat index
       # ifdef DHT_GET_HEAT_INDEX
         String message = "";
         tempJson["uuid"] = SENSOR_UUID;
@@ -224,12 +166,12 @@ void loop() {
         sendMessage(message);
       #endif
 
-      // setze den letzten Lesezeitpunkt auf 0 zurück
+      // reset last read time
       last_read = 0;
     #endif
   }
 
-  // warte, bis wieder gelesen werden muss
-  delay(100);
+  // wait for next read
+  delay(100); // could be replaced by 100ms deep sleep
   last_read += 100;
 }
