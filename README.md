@@ -1,4 +1,4 @@
-# smart home system für iat
+# Smart-Home-System Demoanwendung für die Lehre unter Verwendung von MQTT
 
 ## Setup Anleitung
 
