@@ -10,8 +10,11 @@ creates temperature statistic image from sensor data in database
 
 #### main.py
 
-process data for webserver
+- main script
+- flask webserver
+- flask websocket
+- mqtt subscription and publishing
 
 #### routes.py
 
-**Bitte ergänzen Nils**
+contains all http request routes
