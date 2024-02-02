@@ -18,6 +18,12 @@ sudo apt install docker-compose
 ```
 
 #### Die Zentrale, den Broker und die Datenbank starten
+##### Container bauen
+```
+docker-compose -f docker/docker-compose.yml build
+```
+
+##### Container starten
 
 ```
 docker-compose -f docker/docker-compose.yml up
