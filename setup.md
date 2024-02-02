@@ -1,35 +1,69 @@
-## smart home system for iat
+# smart home system für iat
 
-### setting up project
+## Setup Anleitung
 
-#### use virtualenv
+Wichtig:
+1. Die folgenden Schritte wurden unter Ubuntu getestet
+2. Das Terminal muss sich für die folgenden befehle immer im
+verzeichnis des Projektes befinden, also nicht in einem unterverzeichnis
+/path/to/iat_smart_home directory
+
+### 1. docker-compose ausführen
+
+#### install docker and docker-compose
+
+```
+sudo curl https://get.docker.com | bash
+sudo apt install docker-compose
+```
+
+#### Die Zentrale, den Broker und die Datenbank starten
+
+```
+docker-compose -f docker/docker-compose.yml up
+```
+
+zum beenden dann einfach STRG+C drücken
+
+### 2. Die Simulationsprogramme starten
+### virtualenv
+##### about virtualenv
+
+A virtualenv in Python is a self-contained and isolated environment that allows developers to manage and install dependencies for a specific project without affecting the system-wide Python installation.
+
 ##### installieren
 ```
 apt install python3-pip
 apt install python3-virtualenv
 ```
 
-##### anlegen & activieren
+##### virtuelle umgebung anlegen
 ```
 virtualenv .venv
+```
+
+##### requirements installieren
+```
+pip3 -r requiments.txt install
+```
+###### activate virtualenv
+```
 source .venv/bin/activate
 ```
 
-##### deaktivieren
+##### Temperatursensor starten
 ```
-deactivate
+python3 tools/temp_sensor.py
 ```
 
-### files and directories
+##### Lichtsensor starten
+```
+python3 tools/ligt_sensor.py
+```
 
-#### /docker 
-contains all docker files
+##### RFID-SImulator starten
+```
+python3 tools/rfid_simulator.py
+```
 
-#### /src/flask-server 
-app for the webserver providing all pages
-
-#### /src/com-server 
-app for both websocket to frondend and mqtt connection
-
-### other informations
-proof of concept only!
+Beenden jeweils wieder mit STRG + C
