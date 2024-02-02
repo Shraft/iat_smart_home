@@ -67,3 +67,7 @@ python3 tools/rfid_simulator.py
 ```
 
 Beenden jeweils wieder mit STRG + C
+
+### 3. Webseite aufrufen
+
+diese ist unter http://localhost:8080 zu erreichen
