@@ -18,3 +18,24 @@ creates temperature statistic image from sensor data in database
 #### routes.py
 
 contains all http request routes
+
+
+#### /templates
+
+all .html files
+
+#### /static/charts
+
+all html diagrams for the temperature sensors
+
+#### /static/img
+
+all images & icons used in frontend
+
+#### /static/css
+
+css files
+
+#### /static/javascript
+
+javascript files
