@@ -48,8 +48,7 @@ apt install python3-virtualenv
 virtualenv .venv
 ```
 
-```
-###### activate virtualenv
+##### activate virtualenv
 ```
 source .venv/bin/activate
 ```
@@ -57,7 +56,7 @@ source .venv/bin/activate
 ##### requirements installieren
 ```
 pip3 -r requiments.txt install
-
+```
 
 ##### Temperatursensor starten
 ```
