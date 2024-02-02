@@ -55,7 +55,7 @@ source .venv/bin/activate
 
 ##### requirements installieren
 ```
-pip3 -r requiments.txt install
+pip3 install -r requirements.txt
 ```
 
 ##### Temperatursensor starten
